@@ -1,6 +1,16 @@
+import { Routes, Route, Navigate } from "react-router"
+import CasesPage from "./pages/CasesPage"
+import NewCasePage from "./pages/NewCasePage"
+import NotFoundPage from "./pages/NotFoundPage"
+
 function App() {
   return (
-    <h1>Manifest</h1>
+    <Routes>
+      <Route path="/" element={<Navigate to="/cases" replace />} />
+      <Route path="/cases" element={<CasesPage />} />
+      <Route path="/cases/new" element={<NewCasePage />} />
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   )
 }
 
