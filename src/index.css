@@ -1,0 +1,146 @@
+/* Reset */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+img,
+picture,
+svg,
+video,
+canvas {
+    display: block;
+    max-width: 100%;
+}
+
+/* form controls don't inherit fonts by default */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+    color: inherit;
+}
+
+/* stops long VINs and emails from overflowing */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-wrap: balance;
+}
+
+/* Tokens */
+
+:root {
+    /* surfaces */
+    --bg: light-dark(#F5F6F8, #0D1117);
+    --surface: light-dark(#FFFFFF, #151B23);
+    --surface-2: light-dark(#FFFFFF, #1D242E);
+    /* menus, popovers */
+    --sunken: light-dark(#FAFBFC, #11161D);
+    --field: light-dark(#FFFFFF, #0F141B);
+    /* inputs */
+    --border: light-dark(#E3E6EB, #2A323D);
+    --divider: light-dark(#EEF0F3, #222932);
+    --input: light-dark(#CDD2DA, #3A4351);
+    /* input borders */
+    --hover: light-dark(#F2F4F7, #1E252F);
+    --track: light-dark(#E8EBF0, #2A323D);
+    /* empty part of progress bars */
+
+    /* text */
+    --ink: light-dark(#121826, #E6EAF0);
+    --ink-2: light-dark(#4A5363, #B3BCC8);
+    --ink-3: light-dark(#626B7A, #8C96A4);
+    --ink-4: light-dark(#8A93A3, #6B7482);
+
+    /* brand */
+    --accent: light-dark(#1D4ED8, #2F62E8);
+    --accent-hover: light-dark(#1E40AF, #2756D6);
+    --on-accent: #FFFFFF;
+    --accent-text: light-dark(#1D4ED8, #8DB0FF);
+    --accent-soft: light-dark(#EEF3FE, #1A2744);
+    --accent-ink: light-dark(#1E40AF, #A9C2FF);
+
+    /* status */
+    --warn-bg: light-dark(#FFF6E5, #2E2410);
+    --warn-ink: light-dark(#8A5300, #F2C46D);
+    --warn-icon: light-dark(#B26B00, #E3A73C);
+    --bad-bg: light-dark(#FDEEEC, #361A1A);
+    --bad-ink: light-dark(#A12A1F, #FF9D91);
+    --good-bg: light-dark(#EAF6EF, #11291C);
+    --good-ink: light-dark(#1F6B45, #74D29F);
+    --neutral-bg: light-dark(#EEF0F3, #232A34);
+
+    /* logo: dark tile in light mode, light tile in dark mode */
+    --logo-tile: light-dark(#121826, #E6EAF0);
+    --logo-m: light-dark(#FFFFFF, #0D1117);
+    --logo-v: light-dark(#6E95FF, #2F62E8);
+
+    --shadow: light-dark(rgba(18, 24, 38, 0.08), rgba(0, 0, 0, 0.45));
+    --backdrop: light-dark(rgba(18, 24, 38, 0.45), rgba(0, 0, 0, 0.6));
+
+    --radius: 12px;
+    --font: 'IBM Plex Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+
+/* follow the OS by default; data-theme lets the app override it */
+:root {
+    color-scheme: light dark;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+/* Base */
+
+body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+a {
+    color: var(--accent-text);
+}
+
+a:hover {
+    color: var(--accent-ink);
+}
+
+/* only shows for keyboard users, not on mouse clicks */
+:focus-visible {
+    outline: 2px solid var(--accent-text);
+    outline-offset: 2px;
+}

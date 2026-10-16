@@ -1,0 +1,11 @@
+.logo-tile {
+    fill: var(--logo-tile);
+}
+
+.logo-m {
+    stroke: var(--logo-m);
+}
+
+.logo-v {
+    stroke: var(--logo-v);
+}

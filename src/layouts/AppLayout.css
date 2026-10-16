@@ -1,0 +1,22 @@
+.shell {
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.sidebar {
+    flex: 1 1 232px;
+    padding: 20px 12px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* takes the rest of the width; drops below the sidebar on small screens */
+.main {
+    flex: 999 1 560px;
+    min-width: 0;
+    padding: 28px clamp(16px, 4vw, 40px) 56px;
+}

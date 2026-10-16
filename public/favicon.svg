@@ -1,5 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="8" fill="#121826"/>
-  <path d="M9.5 22.5V9.5M22.5 22.5V9.5" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/>
-  <path d="M9.5 9.5L16 16.5L22.5 9.5" fill="none" stroke="#6E95FF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 32 32" role="img" aria-label="Manifest">
+  <style>
+    .tile { fill: #121826; } .m { stroke: #FFFFFF; } .v { stroke: #6E95FF; }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #E6EAF0; } .m { stroke: #0D1117; } .v { stroke: #2F62E8; }
+    }
+  </style>
+  <rect class="tile" width="32" height="32" rx="8"/>
+  <path class="m" d="M9.5 22.5V9.5M22.5 22.5V9.5" stroke-width="2.6" stroke-linecap="round"/>
+  <path class="v" d="M9.5 9.5L16 16.5L22.5 9.5" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
