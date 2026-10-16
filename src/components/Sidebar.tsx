@@ -9,7 +9,7 @@ type NavItem = {
 }
 
 const NAV_ITEMS: NavItem[] = [
-    { label: 'Open cases', path: '/cases' },
+    { label: 'Open cases', path: '/cases/open' },
     { label: 'Assigned to me', path: '/cases/assigned' },
     { label: 'Closed cases', path: '/cases/closed' },
 ]
