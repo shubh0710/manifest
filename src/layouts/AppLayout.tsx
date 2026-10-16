@@ -1,10 +1,11 @@
 import { Outlet } from "react-router"
+import Sidebar from "../components/Sidebar"
 import './AppLayout.css'
 
 function AppLayout() {
     return (
         <div className="shell">
-            <aside className="sidebar">Sidebar</aside>
+            <Sidebar />
 
             <main className="main">
                 <Outlet />

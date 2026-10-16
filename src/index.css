@@ -95,6 +95,11 @@ h6 {
     --good-ink: light-dark(#1F6B45, #74D29F);
     --neutral-bg: light-dark(#EEF0F3, #232A34);
 
+    /* logo: dark tile in light mode, light tile in dark mode */
+    --logo-tile: light-dark(#121826, #E6EAF0);
+    --logo-m: light-dark(#FFFFFF, #0D1117);
+    --logo-v: light-dark(#6E95FF, #2F62E8);
+
     --shadow: light-dark(rgba(18, 24, 38, 0.08), rgba(0, 0, 0, 0.45));
     --backdrop: light-dark(rgba(18, 24, 38, 0.45), rgba(0, 0, 0, 0.6));
 
