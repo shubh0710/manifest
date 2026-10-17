@@ -144,3 +144,29 @@ a:hover {
     outline: 2px solid var(--accent-text);
     outline-offset: 2px;
 }
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    white-space: nowrap;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--accent);
+    color: var(--on-accent);
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+    color: var(--on-accent);
+}
