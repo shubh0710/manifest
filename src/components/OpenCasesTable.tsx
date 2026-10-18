@@ -1,15 +1,10 @@
-import { Link } from "react-router"
-import type { CaseStage, CaseType, OpenCase } from "../types/case"
+import type { CaseStage, OpenCase } from "../types/case"
 import { formatEffectiveDate, formatUpdated } from "../utils/dates"
+import CaseName from "./CaseName"
 import "./OpenCasesTable.css"
 
 type OpenCasesTableProps = {
     cases: OpenCase[]
-}
-
-const TYPE_LABEL: Record<CaseType, string> = {
-    carrier: 'Carrier',
-    leasing: 'Leasing',
 }
 
 const STAGE_TONE: Record<CaseStage, string> = {
@@ -33,11 +28,7 @@ function OpenCasesTable({ cases }: OpenCasesTableProps) {
                     {cases.map((item) => (
                         <tr key={item.id}>
                             <td>
-                                <div className="case-name">
-                                    <Link to={`/cases/${item.id}`}>{item.name}</Link>
-                                    <span className="type-tag">{TYPE_LABEL[item.type]}</span>
-                                </div>
-                                {item.dot && <span className="case-dot">DOT {item.dot}</span>}
+                                <CaseName item={item} />
                             </td>
                             <td>
                                 <span className={`chip ${STAGE_TONE[item.stage]}`}>{item.stage}</span>
