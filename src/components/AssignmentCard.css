@@ -1,0 +1,36 @@
+.assignment {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px;
+}
+
+.assignment+.assignment {
+    margin-top: 12px;
+}
+
+.assignment-body {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.assignment-note {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--sunken);
+    color: var(--ink-2);
+    line-height: 1.5;
+}
+
+.assignment-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--ink-3);
+}
