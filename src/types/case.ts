@@ -7,7 +7,16 @@ type BaseCase = {
     type: CaseType
     name: string
     dot?: string
+    assignees: string[]
     updatedAt: string
+}
+
+export type NewCase = BaseCase & {
+    status: 'new'
+    assignedBy: string
+    assignedAt: string
+    dueOn: string
+    note?: string
 }
 
 export type OpenCase = BaseCase & {
@@ -23,4 +32,4 @@ export type ClosedCase = BaseCase & {
     closedOn: string
 }
 
-export type Case = OpenCase | ClosedCase
+export type Case = NewCase | OpenCase | ClosedCase
