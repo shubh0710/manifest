@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { formatDate, formatEffectiveDate, formatUpdated } from "./dates"
+import { formatDate, formatEffectiveDate, formatUpdated, daysUntil } from "./dates"
 
 describe('formatDate', () => {
     it('shows a date as month, day and year', () => {
@@ -42,5 +42,21 @@ describe('formatUpdated', () => {
 
     it('shows the date for anything older', () => {
         expect(formatUpdated('2026-10-10T12:00:00Z', now)).toBe('Oct 10, 2026')
+    })
+})
+
+describe('daysUntil', () => {
+    const now = new Date(2026, 9, 18, 15, 0)
+
+    it('is 0 for today', () => {
+        expect(daysUntil('2026-10-18', now)).toBe(0)
+    })
+
+    it('counts days ahead', () => {
+        expect(daysUntil('2026-10-24', now)).toBe(6)
+    })
+
+    it('is negative once the date has passed', () => {
+        expect(daysUntil('2026-10-16', now)).toBe(-2)
     })
 })

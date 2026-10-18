@@ -32,3 +32,10 @@ export function formatUpdated(value: string, now = new Date()): string {
         year: 'numeric',
     })
 }
+
+export function daysUntil(dateOnly: string, now = new Date()): number {
+    const [year, month, day] = dateOnly.split('-').map(Number)
+    const due = Date.UTC(year, month - 1, day)
+    const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate())
+    return Math.round((due - today) / 86400000)
+}
