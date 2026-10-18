@@ -1,5 +1,6 @@
 import { Link } from "react-router"
 import type { Case, CaseStage, CaseType } from "../types/case"
+import { formatEffectiveDate, formatUpdated } from "../utils/dates"
 import "./OpenCasesTable.css"
 
 type OpenCasesTableProps = {
@@ -41,8 +42,8 @@ function OpenCasesTable({ cases }: OpenCasesTableProps) {
                             <td>
                                 <span className={`chip ${STAGE_TONE[item.stage]}`}>{item.stage}</span>
                             </td>
-                            <td className="mono">{item.effectiveDate}</td>
-                            <td className="mono">{item.updatedAt}</td>
+                            <td className="mono">{formatEffectiveDate(item.effectiveDate)}</td>
+                            <td className="mono">{formatUpdated(item.updatedAt)}</td>
                         </tr>
                     ))}
                 </tbody>
