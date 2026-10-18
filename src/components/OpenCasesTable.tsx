@@ -1,10 +1,10 @@
 import { Link } from "react-router"
-import type { Case, CaseStage, CaseType } from "../types/case"
+import type { CaseStage, CaseType, OpenCase } from "../types/case"
 import { formatEffectiveDate, formatUpdated } from "../utils/dates"
 import "./OpenCasesTable.css"
 
 type OpenCasesTableProps = {
-    cases: Case[]
+    cases: OpenCase[]
 }
 
 const TYPE_LABEL: Record<CaseType, string> = {
