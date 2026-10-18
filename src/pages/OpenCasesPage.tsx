@@ -1,8 +1,12 @@
 import { Link } from "react-router"
 import { Plus } from "lucide-react"
+import { CASES } from "../fixtures/cases"
+import OpenCasesTable from "../components/OpenCasesTable"
 import './OpenCasesPage.css'
 
 function OpenCasesPage() {
+    const openCases = CASES.filter((item) => item.status === 'open')
+
     return (
         <>
             <header className="page-header">
@@ -15,6 +19,12 @@ function OpenCasesPage() {
                     Start new case
                 </Link>
             </header>
+
+            {openCases.length > 0 ? (
+                <OpenCasesTable cases={openCases} />
+            ) : (
+                <p className="empty-state">No open cases right now.</p>
+            )}
         </>
     )
 }

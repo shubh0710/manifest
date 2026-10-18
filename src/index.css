@@ -170,3 +170,34 @@ a:hover {
     background: var(--accent-hover);
     color: var(--on-accent);
 }
+
+/* Cards */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+/* Chips */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: var(--neutral-bg);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-2);
+    white-space: nowrap;
+}
+
+.chip.warn {
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+}
+
+.chip.good {
+    background: var(--good-bg);
+    color: var(--good-ink);
+}
