@@ -202,6 +202,11 @@ a:hover {
     color: var(--good-ink);
 }
 
+.chip.bad {
+    background: var(--bad-bg);
+    color: var(--bad-ink);
+}
+
 /* Page header */
 .page-header {
     display: flex;
