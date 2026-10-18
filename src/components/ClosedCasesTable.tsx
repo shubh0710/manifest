@@ -28,7 +28,7 @@ function ClosedCasesTable({ cases }: ClosedCasesTableProps) {
                     {cases.map((item) => (
                         <tr key={item.id}>
                             <td>
-                                <CaseName item={item} />
+                                <CaseName item={item} to={`/cases/${item.id}`} />
                             </td>
                             <td>
                                 <span className={`chip ${OUTCOME_TONE[item.outcome]}`}>{item.outcome}</span>

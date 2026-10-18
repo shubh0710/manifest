@@ -27,7 +27,7 @@ function OpenCasesTable({ cases }: OpenCasesTableProps) {
                     {cases.map((item) => (
                         <tr key={item.id}>
                             <td>
-                                <CaseName item={item} />
+                                <CaseName item={item} to={`/cases/${item.id}`} />
                             </td>
                             <td>
                                 <span className={`chip ${STAGE_TONE[item.stage]}`}>{item.stage}</span>

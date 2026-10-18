@@ -5,7 +5,8 @@
     gap: 8px;
 }
 
-.case-name a {
+.case-name a,
+.case-name strong {
     color: var(--ink);
     font-weight: 600;
     text-decoration: none;
