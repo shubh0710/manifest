@@ -201,3 +201,24 @@ a:hover {
     background: var(--good-bg);
     color: var(--good-ink);
 }
+
+/* Page header */
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+    margin-top: 4px;
+    color: var(--ink-3);
+}
