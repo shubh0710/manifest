@@ -1,7 +1,6 @@
 import type { CaseStage, OpenCase } from "../types/case"
 import { formatEffectiveDate, formatUpdated } from "../utils/dates"
 import CaseName from "./CaseName"
-import "./OpenCasesTable.css"
 
 type OpenCasesTableProps = {
     cases: OpenCase[]
