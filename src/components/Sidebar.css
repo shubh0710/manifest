@@ -59,3 +59,29 @@
     color: var(--accent-ink);
     font-weight: 600;
 }
+
+.sidebar-new {
+    width: 100%;
+}
+
+.nav-text {
+    flex: 1;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--neutral-bg);
+    font: 12px var(--mono);
+    color: var(--ink-2);
+}
+
+.badge.strong {
+    background: var(--accent);
+    color: var(--on-accent);
+}
