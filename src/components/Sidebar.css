@@ -21,6 +21,25 @@
     letter-spacing: -0.02em;
 }
 
+.sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-left: auto;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink-3);
+    cursor: pointer;
+}
+
+.sidebar-toggle:hover {
+    background: var(--hover);
+    color: var(--ink);
+}
+
 .nav {
     display: flex;
     flex-direction: column;
@@ -37,6 +56,7 @@
 }
 
 .nav-item {
+    position: relative;
     display: flex;
     align-items: center;
     min-height: 44px;
@@ -58,4 +78,86 @@
     background: var(--accent-soft);
     color: var(--accent-ink);
     font-weight: 600;
+}
+
+.sidebar-new {
+    width: 100%;
+}
+
+.nav-text {
+    flex: 1;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--neutral-bg);
+    font: 12px var(--mono);
+    color: var(--ink-2);
+}
+
+.badge.strong {
+    background: var(--accent);
+    color: var(--on-accent);
+}
+
+/* Narrow screens: the sidebar sits on top, so there's nothing to collapse */
+@media (max-width: 799px) {
+    .sidebar-toggle {
+        display: none;
+    }
+}
+
+/* Wide screens: the collapsed sidebar becomes a thin strip of icons */
+@media (min-width: 800px) {
+    .sidebar.collapsed {
+        flex: 0 0 64px;
+    }
+
+    .sidebar.collapsed .brand {
+        flex-direction: column;
+        padding: 4px 0;
+    }
+
+    .sidebar.collapsed .sidebar-toggle {
+        margin-left: 0;
+    }
+
+    .sidebar.collapsed .brand-name,
+    .sidebar.collapsed .nav-label {
+        display: none;
+    }
+
+    .sidebar.collapsed .sidebar-new,
+    .sidebar.collapsed .nav-item {
+        justify-content: center;
+        padding: 0;
+    }
+
+    /* Hidden from the eye, still read out by screen readers */
+    .sidebar.collapsed .sidebar-new-text,
+    .sidebar.collapsed .nav-text,
+    .sidebar.collapsed .badge {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .nav-dot {
+        position: absolute;
+        top: 9px;
+        right: 8px;
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--accent);
+    }
 }

@@ -1,14 +1,35 @@
 export type CaseType = 'carrier' | 'leasing'
-export type CaseStatus = 'open' | 'closed'
 export type CaseStage = 'Gathering documents' | 'Ready to submit'
+export type CaseOutcome = 'Bound' | 'Quoted, not bound' | 'Declined by markets'
 
-export type Case = {
+type BaseCase = {
     id: string
     type: CaseType
-    status: CaseStatus
-    stage: CaseStage
     name: string
     dot?: string
-    effectiveDate?: string
+    assignees: string[]
     updatedAt: string
 }
+
+export type NewCase = BaseCase & {
+    status: 'new'
+    assignedBy: string
+    assignedAt: string
+    dueOn: string
+    note?: string
+}
+
+export type OpenCase = BaseCase & {
+    status: 'open'
+    stage: CaseStage
+    effectiveDate?: string
+}
+
+export type ClosedCase = BaseCase & {
+    status: 'closed'
+    outcome: CaseOutcome
+    marketsSubmitted: number
+    closedOn: string
+}
+
+export type Case = NewCase | OpenCase | ClosedCase
