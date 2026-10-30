@@ -106,6 +106,19 @@
     color: var(--on-accent);
 }
 
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding-left: 10px;
+}
+
+.sidebar-footer .nav-label {
+    padding: 0;
+}
+
 /* Narrow screens: the sidebar sits on top, so there's nothing to collapse */
 @media (max-width: 799px) {
     .sidebar-toggle {
@@ -138,6 +151,15 @@
     .sidebar.collapsed .brand-name,
     .sidebar.collapsed .nav-label {
         display: none;
+    }
+
+    .sidebar.collapsed .sidebar-footer {
+        justify-content: center;
+        padding-left: 0;
+    }
+
+    .sidebar.collapsed .theme-switch {
+        flex-direction: column;
     }
 
     .sidebar.collapsed .sidebar-new,

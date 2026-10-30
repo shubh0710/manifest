@@ -4,6 +4,7 @@ import { Archive, Briefcase, Inbox, PanelLeftClose, PanelLeftOpen, Plus, type Lu
 import { CASES } from "../fixtures/cases"
 import type { Case } from "../types/case"
 import Logo from "./Logo"
+import ThemeSwitch from "./ThemeSwitch"
 import './Sidebar.css'
 
 type NavItem = {
@@ -73,6 +74,11 @@ function Sidebar() {
                     )
                 })}
             </nav>
+
+            <div className="sidebar-footer">
+                <span className="nav-label">Theme</span>
+                <ThemeSwitch />
+            </div>
         </aside>
     )
 }
