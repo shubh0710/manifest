@@ -2,8 +2,10 @@ import { useState } from "react"
 import { Link, NavLink } from "react-router"
 import { Archive, Briefcase, Inbox, PanelLeftClose, PanelLeftOpen, Plus, type LucideIcon } from "lucide-react"
 import { CASES } from "../fixtures/cases"
+import { readSetting, saveSetting } from "../utils/storage"
 import type { Case } from "../types/case"
 import Logo from "./Logo"
+import ThemeSwitch from "./ThemeSwitch"
 import './Sidebar.css'
 
 type NavItem = {
@@ -19,11 +21,19 @@ const NAV_ITEMS: NavItem[] = [
     { label: 'Closed cases', path: '/cases/closed', icon: Archive, status: 'closed' },
 ]
 
+const SIDEBAR_KEY = 'manifest-sidebar'
+
 function Sidebar() {
-    const [collapsed, setCollapsed] = useState(false)
+    const [collapsed, setCollapsed] = useState(() => readSetting(SIDEBAR_KEY) === 'collapsed')
 
     const ToggleIcon = collapsed ? PanelLeftOpen : PanelLeftClose
     const toggleLabel = collapsed ? 'Expand sidebar' : 'Collapse sidebar'
+
+    function toggleSidebar() {
+        const next = !collapsed
+        setCollapsed(next)
+        saveSetting(SIDEBAR_KEY, next ? 'collapsed' : 'open')
+    }
 
     return (
         <aside className={collapsed ? 'sidebar collapsed' : 'sidebar'}>
@@ -33,7 +43,7 @@ function Sidebar() {
                 <button
                     type="button"
                     className="sidebar-toggle"
-                    onClick={() => setCollapsed((current) => !current)}
+                    onClick={toggleSidebar}
                     aria-label={toggleLabel}
                     title={toggleLabel}
                 >
@@ -73,6 +83,11 @@ function Sidebar() {
                     )
                 })}
             </nav>
+
+            <div className="sidebar-footer">
+                <span className="nav-label">Theme</span>
+                <ThemeSwitch />
+            </div>
         </aside>
     )
 }
