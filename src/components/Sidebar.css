@@ -113,8 +113,15 @@
     }
 }
 
-/* Wide screens: the collapsed sidebar becomes a thin strip of icons */
+/* Wide screens: the sidebar stays in place while the page scrolls, and can fold into a thin strip */
 @media (min-width: 800px) {
+    .sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+    }
+
     .sidebar.collapsed {
         flex: 0 0 64px;
     }
