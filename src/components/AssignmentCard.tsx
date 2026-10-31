@@ -27,7 +27,7 @@ function AssignmentCard({ assignment }: AssignmentCardProps) {
                     </span>
                 </div>
             </div>
-            <Link to="/cases/new" className="btn btn-primary">
+            <Link to={`/cases/new?assigned=${assignment.id}`} className="btn btn-primary">
                 Start case
             </Link>
         </article>

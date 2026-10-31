@@ -3,6 +3,7 @@ import type { Case } from "../types/case"
 
 export type CasesContextValue = {
     cases: Case[]
+    startCase: (id: string) => void
 }
 
 // The shared box every page reads the cases from. Starts empty (null)
