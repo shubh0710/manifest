@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link, NavLink } from "react-router"
 import { Archive, Briefcase, Inbox, PanelLeftClose, PanelLeftOpen, Plus, type LucideIcon } from "lucide-react"
-import { CASES } from "../fixtures/cases"
+import { useCases } from "../context/casesContext"
 import { readSetting, saveSetting } from "../utils/storage"
 import type { Case } from "../types/case"
 import Logo from "./Logo"
@@ -24,6 +24,7 @@ const NAV_ITEMS: NavItem[] = [
 const SIDEBAR_KEY = 'manifest-sidebar'
 
 function Sidebar() {
+    const { cases } = useCases()
     const [collapsed, setCollapsed] = useState(() => readSetting(SIDEBAR_KEY) === 'collapsed')
 
     const ToggleIcon = collapsed ? PanelLeftOpen : PanelLeftClose
@@ -64,7 +65,7 @@ function Sidebar() {
                 <span className="nav-label">Work</span>
                 {NAV_ITEMS.map((item) => {
                     const Icon = item.icon
-                    const count = CASES.filter((c) => c.status === item.status).length
+                    const count = cases.filter((c) => c.status === item.status).length
                     const needsAttention = item.status === 'new' && count > 0
 
                     return (

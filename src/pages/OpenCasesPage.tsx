@@ -1,13 +1,14 @@
 import { useState } from "react"
-import { CASES } from "../fixtures/cases"
+import { useCases } from "../context/casesContext"
 import OpenCasesTable from "../components/OpenCasesTable"
 import SearchBox from "../components/SearchBox"
 import { matchesSearch } from "../utils/search"
 
 function OpenCasesPage() {
+    const { cases } = useCases()
     const [query, setQuery] = useState('')
 
-    const openCases = CASES.filter((item) => item.status === 'open')
+    const openCases = cases.filter((item) => item.status === 'open')
     const shownCases = openCases.filter((item) => matchesSearch(item, query))
 
     return (

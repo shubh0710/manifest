@@ -171,6 +171,21 @@ a:hover {
     color: var(--on-accent);
 }
 
+.btn-secondary {
+    background: var(--surface);
+    border-color: var(--input);
+    color: var(--ink);
+}
+
+.btn-secondary:hover {
+    background: var(--hover);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Cards */
 .card {
     background: var(--surface);

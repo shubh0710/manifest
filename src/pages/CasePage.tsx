@@ -1,9 +1,10 @@
 import { Link, useParams } from "react-router"
-import { CASES } from "../fixtures/cases"
+import { useCases } from "../context/casesContext"
 
 function CasePage() {
+    const { cases } = useCases()
     const { caseId } = useParams()
-    const currentCase = CASES.find((item) => item.id === caseId)
+    const currentCase = cases.find((item) => item.id === caseId)
 
     if (!currentCase) {
         return (

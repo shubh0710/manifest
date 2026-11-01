@@ -1,13 +1,14 @@
 import { useState } from "react"
-import { CASES } from "../fixtures/cases"
+import { useCases } from "../context/casesContext"
 import AssignmentCard from "../components/AssignmentCard"
 import SearchBox from "../components/SearchBox"
 import { matchesSearch } from "../utils/search"
 
 function AssignedCasesPage() {
+    const { cases } = useCases()
     const [query, setQuery] = useState('')
 
-    const assignedCases = CASES.filter((item) => item.status === 'new')
+    const assignedCases = cases.filter((item) => item.status === 'new')
     const shownCases = assignedCases.filter((item) => matchesSearch(item, query))
 
     return (

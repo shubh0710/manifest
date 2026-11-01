@@ -1,0 +1,86 @@
+/* The two panels sit side by side, and stack on narrow screens */
+.new-case-panels {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.new-case-panel {
+    flex: 1 1 360px;
+    min-width: 0;
+    padding: 24px;
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.panel-title svg {
+    color: var(--accent-text);
+}
+
+.panel-subtitle {
+    margin-top: 4px;
+    color: var(--ink-3);
+}
+
+.pick-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 18px 0 20px;
+}
+
+/* Each assigned case is one big clickable option */
+.pick-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.pick-option:hover {
+    background: var(--hover);
+}
+
+/* The picked option: blue border and a soft blue background */
+.pick-option:has(input:checked) {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.pick-option input {
+    margin-top: 3px;
+    accent-color: var(--accent);
+}
+
+.pick-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.pick-name {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.pick-meta {
+    font-size: 13px;
+    color: var(--ink-3);
+}
+
+.pick-note {
+    margin-top: 4px;
+    line-height: 1.5;
+    color: var(--ink-2);
+}
