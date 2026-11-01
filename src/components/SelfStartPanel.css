@@ -1,0 +1,150 @@
+/* Motor carrier / Leasing company: two buttons in a grey track, the picked one raised */
+.type-switch {
+    display: flex;
+    gap: 2px;
+    margin: 18px 0 20px;
+    padding: 3px;
+    border-radius: 10px;
+    background: var(--neutral-bg);
+}
+
+.type-option {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--ink-3);
+    cursor: pointer;
+}
+
+.type-option:hover {
+    color: var(--ink);
+}
+
+.type-option[aria-pressed='true'] {
+    background: var(--surface-2);
+    color: var(--ink);
+    box-shadow: 0 1px 2px var(--shadow);
+}
+
+.type-label {
+    font-weight: 600;
+}
+
+.type-hint {
+    font-size: 12px;
+    color: var(--ink-3);
+}
+
+.field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+/* The DOT box and the Look up button side by side; the button drops below on narrow screens */
+.field-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.text-input {
+    flex: 1 1 200px;
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid var(--input);
+    border-radius: 8px;
+    background: var(--field);
+    color: var(--ink);
+}
+
+.text-input.mono {
+    font-family: var(--mono);
+}
+
+.field-error {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--bad-ink);
+}
+
+.form-submit {
+    margin-top: 16px;
+}
+
+/* The result of a DOT lookup */
+.lookup-result {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--sunken);
+}
+
+.lookup-found {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--good-ink);
+}
+
+.lookup-name {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.lookup-dot {
+    font: 13px var(--mono);
+    color: var(--ink-3);
+}
+
+/* A coloured note: good (green), warn (amber) or bad (red) */
+.lookup-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.lookup-message svg {
+    flex: none;
+    margin-top: 1px;
+}
+
+.lookup-message a {
+    color: inherit;
+    font-weight: 600;
+}
+
+.lookup-message.good {
+    background: var(--good-bg);
+    color: var(--good-ink);
+}
+
+.lookup-message.warn {
+    background: var(--warn-bg);
+    color: var(--warn-ink);
+}
+
+.lookup-message.bad {
+    background: var(--bad-bg);
+    color: var(--bad-ink);
+}

@@ -1,9 +1,17 @@
 import { createContext, useContext } from "react"
-import type { Case } from "../types/case"
+import type { Case, CaseType } from "../types/case"
+
+// What's needed to create a case yourself
+export type CaseDetails = {
+    type: CaseType
+    name: string
+    dot?: string
+}
 
 export type CasesContextValue = {
     cases: Case[]
     startCase: (id: string) => void
+    createCase: (details: CaseDetails) => string
 }
 
 // The shared box every page reads the cases from. Starts empty (null)

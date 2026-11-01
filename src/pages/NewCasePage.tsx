@@ -1,6 +1,7 @@
 import { useState, type SubmitEvent } from "react"
 import { useNavigate, useSearchParams } from "react-router"
 import { Inbox } from "lucide-react"
+import SelfStartPanel from "../components/SelfStartPanel"
 import { useCases } from "../context/casesContext"
 import { formatDate } from "../utils/dates"
 import "./NewCasePage.css"
@@ -78,6 +79,8 @@ function NewCasePage() {
                         <p className="empty-state">Nothing assigned to you right now.</p>
                     )}
                 </section>
+
+                <SelfStartPanel />
             </div>
         </>
     )
