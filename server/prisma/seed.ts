@@ -1,13 +1,8 @@
-import "dotenv/config"
-import { PrismaPg } from "@prisma/adapter-pg"
-import { PrismaClient, type ItemState, type Prisma } from "../src/generated/prisma/client.js"
+import { prisma } from "../src/db.js"
+import type { ItemState, Prisma } from "../src/generated/prisma/client.js"
 
 // Fills the database with sample data: made-up people, public carriers and
 // made-up leasing companies. It empties the tables first, so it's safe to run again.
-
-const prisma = new PrismaClient({
-    adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
-})
 
 const USERS = [
     { name: 'Alex Kim', email: 'alex.kim@example.com' },
