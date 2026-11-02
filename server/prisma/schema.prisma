@@ -123,3 +123,10 @@ model ChecklistProgress {
 
     @@id([caseId, itemId])
 }
+
+// The last case number used in each year. Each new case takes the next one,
+// so two cases saved at the same moment can never get the same number.
+model CaseCounter {
+    year Int @id
+    last Int
+}

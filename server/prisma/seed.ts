@@ -171,11 +171,15 @@ async function seed() {
     await prisma.case.deleteMany()
     await prisma.company.deleteMany()
     await prisma.user.deleteMany()
+    await prisma.caseCounter.deleteMany()
 
     await prisma.user.createMany({ data: USERS })
     for (const data of CASES) {
         await prisma.case.create({ data })
     }
+
+    // The sample cases go up to C-2026-0149, so the next new case is 0150
+    await prisma.caseCounter.create({ data: { year: 2026, last: 149 } })
 
     console.log(`Added ${USERS.length} people and ${CASES.length} cases`)
 }
