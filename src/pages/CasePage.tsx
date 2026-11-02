@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router"
+import { Building2, Truck } from "lucide-react"
 import CaseStatusChip from "../components/CaseStatusChip"
 import { useCases } from "../context/casesContext"
 import type { Case } from "../types/case"
@@ -42,13 +43,23 @@ function CasePage() {
             <header className="page-header">
                 <div>
                     <h1 className="page-title">{currentCase.name}</h1>
-                    <p className="case-meta">
-                        {currentCase.dot && `USDOT ${currentCase.dot} · `}
-                        {currentCase.type === 'carrier' ? 'Motor carrier' : 'Leasing company'}
-                    </p>
+                    {currentCase.dot && <p className="case-meta">USDOT {currentCase.dot}</p>}
 
                     <div className="case-chips">
                         <CaseStatusChip item={currentCase} />
+
+                        {currentCase.type === 'carrier' ? (
+                            <span className="chip">
+                                <Truck size={14} aria-hidden="true" />
+                                Motor carrier
+                            </span>
+                        ) : (
+                            <span className="chip">
+                                <Building2 size={14} aria-hidden="true" />
+                                Leasing company
+                            </span>
+                        )}
+
                         <span className="chip">Assigned to {currentCase.assignees.join(', ')}</span>
 
                         {currentCase.status === 'new' && (
@@ -65,8 +76,6 @@ function CasePage() {
                                 <span className="chip">{currentCase.marketsSubmitted} markets</span>
                             </>
                         )}
-
-                        <span className="chip">Updated {formatUpdated(currentCase.updatedAt)}</span>
                     </div>
                 </div>
             </header>
