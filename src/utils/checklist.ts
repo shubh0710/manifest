@@ -11,14 +11,12 @@ export const CHECKLISTS: Record<CaseType, ChecklistItem[]> = {
         { id: 'fmcsa', label: 'FMCSA carrier data', hint: 'Authority, fleet size and safety record', required: true },
         { id: 'safety', label: 'Safety practices', hint: 'Dash cams, hiring criteria, maintenance, drug testing', required: false },
         { id: 'explanations', label: 'Explanations for flagged items', hint: 'Past claims or violations, explained by the client', required: false },
-        { id: 'coverLetter', label: 'Cover letter', hint: 'A short story of the business for underwriters', required: false },
     ],
     leasing: [
         { id: 'lossRuns', label: 'Loss runs', hint: 'Last 5 years, currently valued', required: true },
         { id: 'equipment', label: 'Equipment schedule', hint: 'Every leased unit, with its value', required: true },
         { id: 'leaseAgreement', label: 'Sample lease agreement', hint: 'The contract lessees sign', required: true },
         { id: 'screening', label: 'Lessee screening', hint: 'How lessees are checked before they lease', required: false },
-        { id: 'coverLetter', label: 'Cover letter', hint: 'A short story of the business for underwriters', required: false },
     ],
 }
 

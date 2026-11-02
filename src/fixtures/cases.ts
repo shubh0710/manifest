@@ -139,7 +139,6 @@ export const CASES: Case[] = [
             fmcsa: { state: 'done' },
             safety: { state: 'done' },
             explanations: { state: 'done' },
-            coverLetter: { state: 'done' },
         },
     },
     {
@@ -156,7 +155,6 @@ export const CASES: Case[] = [
             lossRuns: { state: 'done' },
             equipment: { state: 'done' },
             leaseAgreement: { state: 'done' },
-            coverLetter: { state: 'done' },
         },
     },
 ]
