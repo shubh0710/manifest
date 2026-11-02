@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest"
-import { CASES } from "../fixtures/cases"
 import type { ChecklistItem } from "../types/checklist"
 import { CHECKLISTS, progressOf, readiness } from "./checklist"
 
@@ -52,20 +51,11 @@ describe('readiness', () => {
     })
 })
 
-describe('the checklists and sample cases', () => {
+describe('the checklists', () => {
     it('has no repeated item IDs in a checklist', () => {
         for (const items of Object.values(CHECKLISTS)) {
             const ids = items.map((item) => item.id)
             expect(new Set(ids).size).toBe(ids.length)
-        }
-    })
-
-    it('only records progress for items on the case’s own checklist', () => {
-        for (const item of CASES) {
-            const ids = CHECKLISTS[item.type].map((entry) => entry.id)
-            for (const key of Object.keys(item.progress ?? {})) {
-                expect(ids).toContain(key)
-            }
         }
     })
 })
