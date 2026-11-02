@@ -15,8 +15,12 @@ export default defineConfig([
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
-    languageOptions: {
+     languageOptions: {
       globals: globals.browser,
+    },
+     rules: {
+      // An input whose name starts with _ is unused on purpose
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
 ])
