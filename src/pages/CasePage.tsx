@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router"
 import { Building2, Truck } from "lucide-react"
 import CaseStatusChip from "../components/CaseStatusChip"
+import ReadinessCard from "../components/ReadinessCard"
 import { useCases } from "../context/casesContext"
 import type { Case } from "../types/case"
 import { formatDate, formatEffectiveDate, formatUpdated } from "../utils/dates"
@@ -96,6 +97,8 @@ function CasePage() {
                     </Link>
                 </section>
             )}
+
+            {currentCase.status !== 'new' && <ReadinessCard item={currentCase} />}
         </>
     )
 }
