@@ -1,15 +1,10 @@
-import type { CaseOutcome, ClosedCase } from "../types/case"
+import type { ClosedCase } from "../types/case"
 import { formatDate } from "../utils/dates"
 import CaseName from "./CaseName"
+import CaseStatusChip from "./CaseStatusChip"
 
 type ClosedCasesTableProps = {
     cases: ClosedCase[]
-}
-
-const OUTCOME_TONE: Record<CaseOutcome, string> = {
-    Bound: 'good',
-    'Quoted, not bound': '',
-    'Declined by markets': 'bad',
 }
 
 function ClosedCasesTable({ cases }: ClosedCasesTableProps) {
@@ -31,7 +26,7 @@ function ClosedCasesTable({ cases }: ClosedCasesTableProps) {
                                 <CaseName item={item} to={`/cases/${item.id}`} />
                             </td>
                             <td>
-                                <span className={`chip ${OUTCOME_TONE[item.outcome]}`}>{item.outcome}</span>
+                                <CaseStatusChip item={item} />
                             </td>
                             <td className="mono">{item.marketsSubmitted}</td>
                             <td className="mono">{formatDate(item.closedOn)}</td>

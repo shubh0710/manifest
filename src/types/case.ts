@@ -1,3 +1,5 @@
+import type { ItemProgress } from "./checklist"
+
 export type CaseType = 'carrier' | 'leasing'
 export type CaseStage = 'Gathering documents' | 'Ready to submit'
 export type CaseOutcome = 'Bound' | 'Quoted, not bound' | 'Declined by markets'
@@ -9,6 +11,7 @@ type BaseCase = {
     dot?: string
     assignees: string[]
     updatedAt: string
+    progress?: Record<string, ItemProgress>
 }
 
 export type NewCase = BaseCase & {

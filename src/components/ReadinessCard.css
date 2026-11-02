@@ -1,0 +1,116 @@
+.readiness {
+    padding: 24px;
+}
+
+/* The title and summary on the left, the score and bar on the right */
+.readiness-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px 24px;
+}
+
+.readiness-title {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.readiness-summary {
+    margin-top: 4px;
+    max-width: 60ch;
+    color: var(--ink-3);
+}
+
+.readiness-score {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 0 1 260px;
+}
+
+.readiness-percent {
+    font-size: 28px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+/* The progress bar: a grey track with a blue fill as wide as the percentage */
+.meter {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--track);
+    overflow: hidden;
+}
+
+.meter-fill {
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+}
+
+/* "REQUIRED TO SUBMIT" and "MAKES THE QUOTE STRONGER" */
+.check-group {
+    margin-top: 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+}
+
+.check-list {
+    padding: 0;
+    list-style: none;
+}
+
+.check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--divider);
+}
+
+.check-row:last-child {
+    border-bottom: 0;
+}
+
+.check-icon {
+    flex: none;
+    margin-top: 2px;
+}
+
+.check-icon.done {
+    color: var(--good-ink);
+}
+
+.check-icon.partial {
+    color: var(--warn-icon);
+}
+
+.check-icon.missing {
+    color: var(--ink-4);
+}
+
+.check-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.check-label {
+    font-weight: 600;
+}
+
+.check-detail {
+    margin-top: 2px;
+    font-size: 13px;
+    color: var(--ink-3);
+}
+
+.check-row .chip {
+    flex: none;
+}

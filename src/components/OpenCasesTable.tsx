@@ -1,14 +1,10 @@
-import type { CaseStage, OpenCase } from "../types/case"
+import type { OpenCase } from "../types/case"
 import { formatEffectiveDate, formatUpdated } from "../utils/dates"
 import CaseName from "./CaseName"
+import CaseStatusChip from "./CaseStatusChip"
 
 type OpenCasesTableProps = {
     cases: OpenCase[]
-}
-
-const STAGE_TONE: Record<CaseStage, string> = {
-    'Gathering documents': 'warn',
-    'Ready to submit': 'good',
 }
 
 function OpenCasesTable({ cases }: OpenCasesTableProps) {
@@ -30,7 +26,7 @@ function OpenCasesTable({ cases }: OpenCasesTableProps) {
                                 <CaseName item={item} to={`/cases/${item.id}`} />
                             </td>
                             <td>
-                                <span className={`chip ${STAGE_TONE[item.stage]}`}>{item.stage}</span>
+                                <CaseStatusChip item={item} />
                             </td>
                             <td className="mono">{formatEffectiveDate(item.effectiveDate)}</td>
                             <td className="mono">{formatUpdated(item.updatedAt)}</td>
