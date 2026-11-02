@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Prisma's generated client: rebuilt with npx prisma generate
+server/src/generated/
