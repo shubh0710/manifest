@@ -1,8 +1,9 @@
 // The database's blueprint: every table, its columns, and how the tables link up.
 
 generator client {
-    provider = "prisma-client"
-    output   = "../src/generated/prisma"
+    provider        = "prisma-client"
+    output          = "../src/generated/prisma"
+    previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
@@ -90,6 +91,8 @@ model Case {
     people     CasePerson[]
     progress   ChecklistProgress[]
 
+    // Only one case in progress (new or open) per company
+    @@unique([companyId], map: "Case_one_active_per_company", where: raw("status IN ('new', 'open')"))
     @@index([companyId])
 }
 
