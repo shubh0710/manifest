@@ -1,14 +1,15 @@
 import request from "supertest"
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { createApp } from "../app.js"
-import { ActiveCaseError } from "../errors.js"
-import { createCase, listCases } from "../services/casesService.js"
+import { ActiveCaseError, CaseAlreadyStartedError, CaseNotFoundError } from "../errors.js"
+import { createCase, listCases, startCase } from "../services/casesService.js"
 import type { OpenCase } from "../types/case.js"
 
 // Swap the service for a stand-in, so these tests never touch the database
 vi.mock('../services/casesService.js', () => ({
     listCases: vi.fn(),
     createCase: vi.fn(),
+    startCase: vi.fn(),
 }))
 
 const OPEN_CASE: OpenCase = {
@@ -110,5 +111,38 @@ describe('POST /api/cases', () => {
 
         expect(response.status).toBe(400)
         expect(response.body).toEqual({ error: 'The request was not valid JSON' })
+    })
+})
+
+describe('POST /api/cases/:id/start', () => {
+    it('starts the case and sends it back', async () => {
+        vi.mocked(startCase).mockResolvedValue({ ...OPEN_CASE, id: 'C-2026-0147' })
+
+        const response = await request(createApp()).post('/api/cases/C-2026-0147/start')
+
+        expect(response.status).toBe(200)
+        expect(response.body.status).toBe('open')
+        expect(startCase).toHaveBeenCalledWith('C-2026-0147')
+    })
+
+    it('answers 404 when there is no such case', async () => {
+        vi.mocked(startCase).mockRejectedValue(new CaseNotFoundError('C-2026-9999'))
+
+        const response = await request(createApp()).post('/api/cases/C-2026-9999/start')
+
+        expect(response.status).toBe(404)
+        expect(response.body).toEqual({ error: 'There is no case with this number' })
+    })
+
+    it('answers 409 when the case has already been started', async () => {
+        vi.mocked(startCase).mockRejectedValue(new CaseAlreadyStartedError('C-2026-0141'))
+
+        const response = await request(createApp()).post('/api/cases/C-2026-0141/start')
+
+        expect(response.status).toBe(409)
+        expect(response.body).toEqual({
+            error: 'This case has already been started',
+            caseId: 'C-2026-0141',
+        })
     })
 })

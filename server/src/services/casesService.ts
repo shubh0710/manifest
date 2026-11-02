@@ -1,5 +1,5 @@
 import { prisma } from "../db.js"
-import { ActiveCaseError } from "../errors.js"
+import { ActiveCaseError, CaseAlreadyStartedError, CaseNotFoundError } from "../errors.js"
 import { Prisma } from "../generated/prisma/client.js"
 import type { Case, CaseOutcome, CaseStage, ItemProgress } from "../types/case.js"
 import type { CaseDetails } from "../validation/caseDetails.js"
@@ -72,6 +72,26 @@ async function saveNewCase(details: CaseDetails): Promise<Case> {
     return toApiCase(created)
 }
 
+// Turns an assigned (new) case into an open one, and gives it back
+export async function startCase(caseId: string): Promise<Case> {
+    try {
+        const started = await prisma.case.update({
+            // Only a case that is still new can be started
+            where: { number: caseId, status: 'new' },
+            data: { status: 'open', stage: 'gathering_documents' },
+            include: CASE_DETAILS,
+        })
+        return toApiCase(started)
+    } catch (error) {
+        if (!isNotFound(error)) {
+            throw error
+        }
+        // Nothing was changed: either there's no such case, or it's not new any more
+        const existing = await prisma.case.findUnique({ where: { number: caseId } })
+        throw existing ? new CaseAlreadyStartedError(caseId) : new CaseNotFoundError(caseId)
+    }
+}
+
 // A company's case in progress (new or open), if it has one
 const ACTIVE_CASE = {
     where: { status: { in: ['new', 'open'] } },
@@ -114,6 +134,11 @@ export function formatCaseNumber(year: number, count: number): string {
 // P2002 is Prisma's code for "a unique rule turned this save down"
 function isUniqueClash(error: unknown): boolean {
     return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002'
+}
+
+// P2025 is Prisma's code for "no row matched, so nothing was changed"
+function isNotFound(error: unknown): boolean {
+    return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025'
 }
 
 // Turns one database row (with its company, people and checklist) into the
