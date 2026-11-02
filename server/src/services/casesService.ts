@@ -1,6 +1,11 @@
 import { prisma } from "../db.js"
-import type { Prisma } from "../generated/prisma/client.js"
+import { ActiveCaseError } from "../errors.js"
+import { Prisma } from "../generated/prisma/client.js"
 import type { Case, CaseOutcome, CaseStage, ItemProgress } from "../types/case.js"
+import type { CaseDetails } from "../validation/caseDetails.js"
+
+// Stands in for the logged-in employee until log-in exists (ticket 7)
+const CURRENT_USER_EMAIL = 'alex.kim@example.com'
 
 // Everything a case needs from the other tables, fetched in the same request
 const CASE_DETAILS = {
@@ -31,6 +36,84 @@ export async function listCases(): Promise<Case[]> {
         orderBy: { updatedAt: 'desc' },
     })
     return rows.map(toApiCase)
+}
+
+// Starts a new open case, assigned to you, and gives it back
+export async function createCase(details: CaseDetails): Promise<Case> {
+    try {
+        return await saveNewCase(details)
+    } catch (error) {
+        // Someone else saved a case for the same company at the same moment, and
+        // the database turned ours down. Look again: this time we'll see their case.
+        if (isUniqueClash(error)) {
+            return await saveNewCase(details)
+        }
+        throw error
+    }
+}
+
+async function saveNewCase(details: CaseDetails): Promise<Case> {
+    const company = await findCompany(details)
+    const activeCase = company?.cases[0]
+    if (activeCase) {
+        throw new ActiveCaseError(activeCase.number)
+    }
+
+    const created = await prisma.case.create({
+        data: {
+            number: await nextCaseNumber(),
+            status: 'open',
+            stage: 'gathering_documents',
+            company: company ? { connect: { id: company.id } } : { create: details },
+            people: { create: { user: { connect: { email: CURRENT_USER_EMAIL } } } },
+        },
+        include: CASE_DETAILS,
+    })
+    return toApiCase(created)
+}
+
+// A company's case in progress (new or open), if it has one
+const ACTIVE_CASE = {
+    where: { status: { in: ['new', 'open'] } },
+    select: { number: true },
+    take: 1,
+} satisfies Prisma.Company$casesArgs
+
+// The company's existing record, if there is one. Carriers are matched by
+// USDOT number; leasing companies by name, ignoring capitals.
+function findCompany(details: CaseDetails) {
+    if (details.type === 'carrier') {
+        return prisma.company.findUnique({
+            where: { dot: details.dot },
+            include: { cases: ACTIVE_CASE },
+        })
+    }
+    return prisma.company.findFirst({
+        where: { type: 'leasing', name: { equals: details.name, mode: 'insensitive' } },
+        include: { cases: ACTIVE_CASE },
+    })
+}
+
+// Takes the next case number for this year. The counter goes up by one in a
+// single step inside the database, so no two cases ever get the same number.
+async function nextCaseNumber(): Promise<string> {
+    const year = new Date().getFullYear()
+    const counter = await prisma.caseCounter.upsert({
+        where: { year },
+        create: { year, last: 1 },
+        update: { last: { increment: 1 } },
+    })
+    return formatCaseNumber(year, counter.last)
+}
+
+// 2026 and 150 → C-2026-0150
+export function formatCaseNumber(year: number, count: number): string {
+    return `C-${year}-${String(count).padStart(4, '0')}`
+}
+
+// P2002 is Prisma's code for "a unique rule turned this save down"
+function isUniqueClash(error: unknown): boolean {
+    return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002'
 }
 
 // Turns one database row (with its company, people and checklist) into the

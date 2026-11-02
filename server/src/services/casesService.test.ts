@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { toApiCase, type CaseRow } from "./casesService.js"
+import { formatCaseNumber, toApiCase, type CaseRow } from "./casesService.js"
 
 // A plain open carrier case, as the database would return it.
 // Each test changes only what it's about.
@@ -107,5 +107,15 @@ describe('toApiCase', () => {
         const row = makeRow({ stage: null })
 
         expect(() => toApiCase(row)).toThrow('Case C-2026-0141 is missing stage')
+    })
+})
+
+describe('formatCaseNumber', () => {
+    it('puts the year and the count together', () => {
+        expect(formatCaseNumber(2026, 150)).toBe('C-2026-0150')
+    })
+
+    it('pads the count to four digits', () => {
+        expect(formatCaseNumber(2027, 1)).toBe('C-2027-0001')
     })
 })

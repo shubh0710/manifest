@@ -6,6 +6,9 @@ import casesRouter from "./routes/cases.js"
 export function createApp() {
     const app = express()
 
+    // Reads JSON sent with a request into req.body
+    app.use(express.json())
+
     app.get('/api/health', (_req, res) => {
         res.json({ status: 'ok' })
     })
@@ -13,7 +16,12 @@ export function createApp() {
     app.use('/api/cases', casesRouter)
 
     // Anything that goes wrong in a route ends up here
-    app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
+    app.use((error: Error & { status?: number }, _req: Request, res: Response, _next: NextFunction) => {
+        // Broken JSON in the request is the sender's mistake, not the server's
+        if (error.status === 400) {
+            res.status(400).json({ error: 'The request was not valid JSON' })
+            return
+        }
         console.error(error)
         res.status(500).json({ error: 'Something went wrong on the server' })
     })
