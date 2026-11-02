@@ -1,0 +1,122 @@
+// The database's blueprint: every table, its columns, and how the tables link up.
+
+generator client {
+    provider = "prisma-client"
+    output   = "../src/generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+enum CompanyType {
+    carrier
+    leasing
+}
+
+enum CaseStatus {
+    new
+    open
+    closed
+}
+
+enum CaseStage {
+    gathering_documents
+    ready_to_submit
+}
+
+enum CaseOutcome {
+    bound
+    quoted_not_bound
+    declined
+}
+
+enum ItemState {
+    done
+    partial
+    missing
+}
+
+// The people who use Manifest
+model User {
+    id        Int      @id @default(autoincrement())
+    name      String
+    email     String   @unique
+    createdAt DateTime @default(now())
+
+    cases         CasePerson[]
+    casesAssigned Case[]       @relation("AssignedBy")
+}
+
+// A carrier or leasing company. One company can have many cases over the years.
+model Company {
+    id        Int         @id @default(autoincrement())
+    type      CompanyType
+    name      String
+    dot       String?     @unique
+    createdAt DateTime    @default(now())
+
+    cases Case[]
+}
+
+// One quote job for one company. Some columns only apply at one stage:
+// new cases have a due date, open cases a stage, closed cases an outcome.
+model Case {
+    id        Int        @id @default(autoincrement())
+    number    String     @unique
+    companyId Int
+    status    CaseStatus @default(new)
+
+    // New
+    assignedById Int?
+    assignedAt   DateTime?
+    dueOn        DateTime? @db.Date
+    note         String?
+
+    // Open
+    stage         CaseStage?
+    effectiveDate DateTime?  @db.Date
+
+    // Closed
+    outcome          CaseOutcome?
+    marketsSubmitted Int?
+    closedOn         DateTime?    @db.Date
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    company    Company             @relation(fields: [companyId], references: [id])
+    assignedBy User?               @relation("AssignedBy", fields: [assignedById], references: [id])
+    people     CasePerson[]
+    progress   ChecklistProgress[]
+
+    @@index([companyId])
+}
+
+// Who is working on which case. A case can have several people,
+// and a person can be on many cases.
+model CasePerson {
+    caseId  Int
+    userId  Int
+    addedAt DateTime @default(now())
+
+    case Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id])
+
+    @@id([caseId, userId])
+    @@index([userId])
+}
+
+// Where one case stands on one checklist item, like loss runs.
+// Items with no row haven't been received yet.
+model ChecklistProgress {
+    caseId    Int
+    itemId    String
+    state     ItemState
+    detail    String?
+    updatedAt DateTime  @updatedAt
+
+    case Case @relation(fields: [caseId], references: [id], onDelete: Cascade)
+
+    @@id([caseId, itemId])
+}
