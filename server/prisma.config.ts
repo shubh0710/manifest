@@ -7,6 +7,8 @@ export default defineConfig({
     schema: 'prisma/schema.prisma',
     migrations: {
         path: 'prisma/migrations',
+        // Fills the tables with sample data: npx prisma db seed
+        seed: 'tsx prisma/seed.ts',
     },
     datasource: {
         // Changes to the tables need a direct connection, not the pooled one
