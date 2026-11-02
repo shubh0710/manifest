@@ -49,6 +49,12 @@ export const CASES: Case[] = [
         assignees: ['Alex Kim'],
         effectiveDate: '2026-11-20',
         updatedAt: '2026-10-17T10:15:00Z',
+        progress: {
+            lossRuns: { state: 'partial', detail: '3 of 5 years received' },
+            ifta: { state: 'done', detail: 'Last 4 quarters received' },
+            vehicles: { state: 'done' },
+            fmcsa: { state: 'done' },
+        },
     },
     {
         id: 'C-2026-0142',
@@ -60,6 +66,14 @@ export const CASES: Case[] = [
         assignees: ['Alex Kim', 'Daniel Ortiz'],
         effectiveDate: '2026-12-01',
         updatedAt: '2026-10-16T15:40:00Z',
+        progress: {
+            lossRuns: { state: 'done' },
+            ifta: { state: 'done' },
+            drivers: { state: 'done' },
+            vehicles: { state: 'done' },
+            fmcsa: { state: 'done' },
+            safety: { state: 'done' },
+        },
     },
     {
         id: 'C-2026-0143',
@@ -71,6 +85,10 @@ export const CASES: Case[] = [
         assignees: ['Alex Kim'],
         effectiveDate: '2027-01-01',
         updatedAt: '2026-10-15T09:05:00Z',
+        progress: {
+            lossRuns: { state: 'done' },
+            fmcsa: { state: 'done' },
+        },
     },
     {
         id: 'C-2026-0144',
@@ -81,6 +99,11 @@ export const CASES: Case[] = [
         dot: '1864030',
         assignees: ['Alex Kim'],
         updatedAt: '2026-10-17T12:30:00Z',
+        progress: {
+            lossRuns: { state: 'missing', detail: 'New venture: no prior policy' },
+            drivers: { state: 'partial', detail: '2 of 3 MVRs pulled' },
+            fmcsa: { state: 'done' },
+        },
     },
     {
         id: 'C-2026-0145',
@@ -91,6 +114,11 @@ export const CASES: Case[] = [
         assignees: ['Alex Kim'],
         effectiveDate: '2026-12-15',
         updatedAt: '2026-10-14T11:20:00Z',
+        progress: {
+            lossRuns: { state: 'done' },
+            equipment: { state: 'done' },
+            leaseAgreement: { state: 'done' },
+        },
     },
     {
         id: 'C-2026-0138',
@@ -103,6 +131,16 @@ export const CASES: Case[] = [
         marketsSubmitted: 4,
         closedOn: '2026-09-28',
         updatedAt: '2026-09-28T16:00:00Z',
+        progress: {
+            lossRuns: { state: 'done' },
+            ifta: { state: 'done' },
+            drivers: { state: 'done' },
+            vehicles: { state: 'done' },
+            fmcsa: { state: 'done' },
+            safety: { state: 'done' },
+            explanations: { state: 'done' },
+            coverLetter: { state: 'done' },
+        },
     },
     {
         id: 'C-2026-0131',
@@ -114,5 +152,11 @@ export const CASES: Case[] = [
         marketsSubmitted: 3,
         closedOn: '2026-09-12',
         updatedAt: '2026-09-12T10:30:00Z',
+        progress: {
+            lossRuns: { state: 'done' },
+            equipment: { state: 'done' },
+            leaseAgreement: { state: 'done' },
+            coverLetter: { state: 'done' },
+        },
     },
 ]
