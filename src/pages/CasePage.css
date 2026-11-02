@@ -1,0 +1,66 @@
+/* "Open cases / J. B. HUNT…": where this case lives, with a link back */
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    color: var(--ink-3);
+}
+
+.breadcrumb a {
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.case-meta {
+    margin-top: 6px;
+    font: 13px var(--mono);
+    color: var(--ink-3);
+}
+
+.case-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+/* Shown on a case that's assigned but not started yet */
+.start-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px;
+}
+
+.start-body {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+.start-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.start-meta {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--ink-3);
+}
+
+.start-note {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--sunken);
+    line-height: 1.5;
+    color: var(--ink-2);
+}
