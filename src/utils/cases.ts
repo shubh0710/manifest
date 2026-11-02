@@ -28,15 +28,3 @@ export function findActiveCaseByName<T extends { status: Case['status']; name: s
     const wanted = name.trim().toLowerCase()
     return cases.find((item) => isActive(item) && item.name.toLowerCase() === wanted)
 }
-
-// Case IDs look like C-2026-0147: the year, then a running number.
-// The next one is the highest number used this year, plus 1.
-export function nextCaseId(cases: { id: string }[], year = new Date().getFullYear()): string {
-    const prefix = `C-${year}-`
-    const numbers = cases
-        .filter((item) => item.id.startsWith(prefix))
-        .map((item) => Number(item.id.slice(prefix.length)))
-    const next = Math.max(0, ...numbers) + 1
-
-    return prefix + String(next).padStart(4, '0')
-}

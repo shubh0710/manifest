@@ -20,3 +20,11 @@
     min-width: 0;
     padding: 28px clamp(16px, 4vw, 40px) 56px;
 }
+
+/* Shown in place of the page when the cases couldn't be loaded */
+.load-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}

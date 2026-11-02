@@ -1,63 +1,84 @@
-import { useState, type ReactNode } from "react"
-import { CASES } from "../fixtures/cases"
-import type { OpenCase } from "../types/case"
-import { nextCaseId } from "../utils/cases"
-import { CasesContext, type CaseDetails } from "./casesContext"
-
-// Stands in for the logged-in employee until log-in exists
-const CURRENT_USER = 'Alex Kim'
+import { useEffect, useState, type ReactNode } from "react"
+import * as api from "../api/cases"
+import type { Case } from "../types/case"
+import { CasesContext, type LoadStatus } from "./casesContext"
 
 type CasesProviderProps = {
     children: ReactNode
 }
 
-// Holds the one list of cases for the whole app.
-// For now it starts from the sample cases; later it will load them from the server.
+// Holds the one list of cases for the whole app, loaded from the server
 function CasesProvider({ children }: CasesProviderProps) {
-    const [cases, setCases] = useState(CASES)
+    const [cases, setCases] = useState<Case[]>([])
+    const [status, setStatus] = useState<LoadStatus>('loading')
+    // Goes up by one each time we ask for the list again
+    const [attempt, setAttempt] = useState(0)
 
-    // Turns an assigned (new) case into an open one. It keeps its ID, company and people.
-    function startCase(id: string) {
-        setCases((current) =>
-            current.map((item) => {
-                if (item.id !== id || item.status !== 'new') {
-                    return item
+    useEffect(() => {
+        // If the page goes away (or asks again) before the answer arrives, ignore that answer
+        let ignore = false
+
+        api.fetchCases()
+            .then((loaded) => {
+                if (!ignore) {
+                    setCases(loaded)
+                    setStatus('ready')
                 }
-
-                const started: OpenCase = {
-                    id: item.id,
-                    type: item.type,
-                    name: item.name,
-                    dot: item.dot,
-                    assignees: item.assignees,
-                    status: 'open',
-                    stage: 'Gathering documents',
-                    updatedAt: new Date().toISOString(),
+            })
+            .catch(() => {
+                if (!ignore) {
+                    setStatus('error')
                 }
+            })
 
-                return started
-            }),
-        )
-    }
-
-    // Creates a brand-new open case, assigned to you, and gives back its ID
-    function createCase(details: CaseDetails): string {
-        const created: OpenCase = {
-            id: nextCaseId(cases),
-            type: details.type,
-            name: details.name,
-            dot: details.dot,
-            assignees: [CURRENT_USER],
-            status: 'open',
-            stage: 'Gathering documents',
-            updatedAt: new Date().toISOString(),
+        return () => {
+            ignore = true
         }
+    }, [attempt])
 
-        setCases((current) => [created, ...current])
-        return created.id
+    function reload() {
+        setStatus('loading')
+        setAttempt((current) => current + 1)
     }
 
-    return <CasesContext value={{ cases, startCase, createCase }}>{children}</CasesContext>
+    // Fetches the latest list without the "Loading…" screen. Used when the server
+    // knows something this page doesn't (someone else just changed a case).
+    function refreshQuietly() {
+        api.fetchCases()
+            .then(setCases)
+            .catch(() => { })
+    }
+
+    // Asks the server to start an assigned case, then swaps in the updated case
+    async function startCase(id: string) {
+        try {
+            const started = await api.startCase(id)
+            setCases((current) => current.map((item) => (item.id === id ? started : item)))
+        } catch (error) {
+            if (error instanceof api.ApiError && error.status === 409) {
+                refreshQuietly()
+            }
+            throw error
+        }
+    }
+
+    // Asks the server to create a case, adds it to the top of the list, and gives back its ID
+    async function createCase(details: api.CaseDetails): Promise<string> {
+        try {
+            const created = await api.createCase(details)
+            setCases((current) => [created, ...current])
+            return created.id
+        } catch (error) {
+            if (error instanceof api.ApiError && error.status === 409) {
+                refreshQuietly()
+            }
+            throw error
+        }
+    }
+
+    return (
+        <CasesContext value={{ cases, status, reload, startCase, createCase }}>{children}</CasesContext>
+    )
 }
 
 export default CasesProvider

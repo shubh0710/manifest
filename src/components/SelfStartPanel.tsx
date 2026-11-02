@@ -1,6 +1,7 @@
 import { useState, type SubmitEvent } from "react"
 import { Link, useNavigate } from "react-router"
 import { CircleCheck, Plus, TriangleAlert } from "lucide-react"
+import { ApiError } from "../api/cases"
 import { useCases } from "../context/casesContext"
 import { CARRIERS } from "../fixtures/carriers"
 import type { CaseType } from "../types/case"
@@ -27,6 +28,10 @@ function SelfStartPanel() {
     const [lookedUpDot, setLookedUpDot] = useState('')
     const [leasingName, setLeasingName] = useState('')
     const [error, setError] = useState('')
+    const [saving, setSaving] = useState(false)
+    // A case in progress the server told us about, that this page didn't know of yet
+    // (someone else at the firm may have just started one)
+    const [serverCaseId, setServerCaseId] = useState('')
 
     // Carrier: the record found for the looked-up DOT, and any case already in progress for it
     const carrier = CARRIERS.find((item) => item.dot === lookedUpDot)
@@ -35,29 +40,35 @@ function SelfStartPanel() {
     // Leasing: any case already in progress under this name, checked as you type
     const leasingCase = leasingName.trim() ? findActiveCaseByName(cases, leasingName) : undefined
 
+    // Clears any message from an earlier try
+    function clearMessages() {
+        setError('')
+        setServerCaseId('')
+    }
+
     function chooseType(next: CaseType) {
         setCaseType(next)
-        setError('')
+        clearMessages()
     }
 
     function handleDotChange(value: string) {
         setDotInput(value)
         // A different number needs a new lookup
         setLookedUpDot('')
-        setError('')
+        clearMessages()
     }
 
     function handleLookUp(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault()
         const dot = dotInput.trim()
 
+        clearMessages()
         if (!isValidDot(dot)) {
             setLookedUpDot('')
             setError('Enter a USDOT number: digits only, up to 8.')
             return
         }
 
-        setError('')
         setLookedUpDot(dot)
     }
 
@@ -70,16 +81,31 @@ function SelfStartPanel() {
             return
         }
 
-        if (leasingCase) {
+        if (leasingCase || serverCaseId) {
             return
         }
 
         openNewCase('leasing', name)
     }
 
-    function openNewCase(type: CaseType, name: string, dot?: string) {
-        const id = createCase({ type, name, dot })
-        navigate(`/cases/${id}`)
+    async function openNewCase(type: CaseType, name: string, dot?: string) {
+        if (saving) {
+            return
+        }
+
+        setSaving(true)
+        clearMessages()
+        try {
+            const id = await createCase({ type, name, dot })
+            navigate(`/cases/${id}`)
+        } catch (caught) {
+            setSaving(false)
+            if (caught instanceof ApiError && caught.status === 409 && caught.caseId) {
+                setServerCaseId(caught.caseId)
+            } else {
+                setError(caught instanceof ApiError ? caught.message : 'Something went wrong. Please try again.')
+            }
+        }
     }
 
     return (
@@ -162,6 +188,8 @@ function SelfStartPanel() {
                                             <Link to={`/cases/${carrierCase.id}`}>Open that case</Link>
                                         </span>
                                     </p>
+                                ) : serverCaseId ? (
+                                    <JustStartedMessage caseId={serverCaseId} />
                                 ) : (
                                     <>
                                         <p className="lookup-message good">
@@ -171,9 +199,10 @@ function SelfStartPanel() {
                                         <button
                                             type="button"
                                             className="btn btn-primary"
+                                            disabled={saving}
                                             onClick={() => openNewCase('carrier', carrier.name, carrier.dot)}
                                         >
-                                            Create case and assign to me
+                                            {saving ? 'Creating…' : 'Create case and assign to me'}
                                         </button>
                                     </>
                                 )}
@@ -193,7 +222,7 @@ function SelfStartPanel() {
                         value={leasingName}
                         onChange={(event) => {
                             setLeasingName(event.target.value)
-                            setError('')
+                            clearMessages()
                         }}
                         placeholder="e.g. Granite Peak Trailer Leasing LLC"
                     />
@@ -214,12 +243,36 @@ function SelfStartPanel() {
                         </p>
                     )}
 
-                    <button type="submit" className="btn btn-primary form-submit" disabled={Boolean(leasingCase)}>
-                        Create case and assign to me
+                    {!leasingCase && serverCaseId && <JustStartedMessage caseId={serverCaseId} />}
+
+                    <button
+                        type="submit"
+                        className="btn btn-primary form-submit"
+                        disabled={Boolean(leasingCase || serverCaseId) || saving}
+                    >
+                        {saving ? 'Creating…' : 'Create case and assign to me'}
                     </button>
                 </form>
             )}
         </section>
+    )
+}
+
+type JustStartedMessageProps = {
+    caseId: string
+}
+
+// Shown when the server turns a new case down because someone else at the firm
+// started one for this company a moment ago
+function JustStartedMessage({ caseId }: JustStartedMessageProps) {
+    return (
+        <p className="lookup-message warn" role="alert">
+            <TriangleAlert size={16} aria-hidden="true" />
+            <span>
+                Someone at the firm has just started a case for this company.{' '}
+                <Link to={`/cases/${caseId}`}>Open that case</Link>
+            </span>
+        </p>
     )
 }
 

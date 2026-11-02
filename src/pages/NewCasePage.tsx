@@ -1,6 +1,7 @@
 import { useState, type SubmitEvent } from "react"
 import { useNavigate, useSearchParams } from "react-router"
 import { Inbox } from "lucide-react"
+import { ApiError } from "../api/cases"
 import SelfStartPanel from "../components/SelfStartPanel"
 import { useCases } from "../context/casesContext"
 import { formatDate } from "../utils/dates"
@@ -11,21 +12,30 @@ function NewCasePage() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
     const [pickedId, setPickedId] = useState(searchParams.get('assigned') ?? '')
+    const [starting, setStarting] = useState(false)
+    const [startError, setStartError] = useState('')
 
     const assignedCases = cases.filter((item) => item.status === 'new')
 
     // The picked case if it's still on the list, otherwise the first one
     const picked = assignedCases.find((item) => item.id === pickedId) ?? assignedCases[0]
 
-    function handleStart(event: SubmitEvent<HTMLFormElement>) {
+    async function handleStart(event: SubmitEvent<HTMLFormElement>) {
         event.preventDefault()
 
-        if (!picked) {
+        if (!picked || starting) {
             return
         }
 
-        startCase(picked.id)
-        navigate(`/cases/${picked.id}`)
+        setStarting(true)
+        setStartError('')
+        try {
+            await startCase(picked.id)
+            navigate(`/cases/${picked.id}`)
+        } catch (error) {
+            setStartError(error instanceof ApiError ? error.message : 'Something went wrong. Please try again.')
+            setStarting(false)
+        }
     }
 
     return (
@@ -58,7 +68,10 @@ function NewCasePage() {
                                             name="assigned"
                                             value={item.id}
                                             checked={item.id === picked.id}
-                                            onChange={() => setPickedId(item.id)}
+                                            onChange={() => {
+                                                setPickedId(item.id)
+                                                setStartError('')
+                                            }}
                                         />
                                         <span className="pick-body">
                                             <span className="pick-name">{item.name}</span>
@@ -71,9 +84,15 @@ function NewCasePage() {
                                 ))}
                             </div>
 
-                            <button type="submit" className="btn btn-primary">
-                                Start this case
+                            <button type="submit" className="btn btn-primary" disabled={starting}>
+                                {starting ? 'Starting…' : 'Start this case'}
                             </button>
+
+                            {startError && (
+                                <p className="field-error" role="alert">
+                                    {startError}
+                                </p>
+                            )}
                         </form>
                     ) : (
                         <p className="empty-state">Nothing assigned to you right now.</p>

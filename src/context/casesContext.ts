@@ -1,17 +1,16 @@
 import { createContext, useContext } from "react"
-import type { Case, CaseType } from "../types/case"
+import type { CaseDetails } from "../api/cases"
+import type { Case } from "../types/case"
 
-// What's needed to create a case yourself
-export type CaseDetails = {
-    type: CaseType
-    name: string
-    dot?: string
-}
+// Where the list stands: still coming from the server, ready, or failed to load
+export type LoadStatus = 'loading' | 'ready' | 'error'
 
 export type CasesContextValue = {
     cases: Case[]
-    startCase: (id: string) => void
-    createCase: (details: CaseDetails) => string
+    status: LoadStatus
+    reload: () => void
+    startCase: (id: string) => Promise<void>
+    createCase: (details: CaseDetails) => Promise<string>
 }
 
 // The shared box every page reads the cases from. Starts empty (null)

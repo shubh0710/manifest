@@ -24,7 +24,7 @@ const NAV_ITEMS: NavItem[] = [
 const SIDEBAR_KEY = 'manifest-sidebar'
 
 function Sidebar() {
-    const { cases } = useCases()
+    const { cases, status } = useCases()
     const [collapsed, setCollapsed] = useState(() => readSetting(SIDEBAR_KEY) === 'collapsed')
 
     const ToggleIcon = collapsed ? PanelLeftOpen : PanelLeftClose
@@ -78,7 +78,10 @@ function Sidebar() {
                         >
                             <Icon size={18} aria-hidden="true" />
                             <span className="nav-text">{item.label}</span>
-                            <span className={needsAttention ? 'badge strong' : 'badge'}>{count}</span>
+                            {/* No numbers until the list has loaded, so nothing shows a wrong 0 */}
+                            {status === 'ready' && (
+                                <span className={needsAttention ? 'badge strong' : 'badge'}>{count}</span>
+                            )}
                             {collapsed && needsAttention && <span className="nav-dot" aria-hidden="true" />}
                         </NavLink>
                     )
