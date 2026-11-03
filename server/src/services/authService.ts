@@ -49,3 +49,8 @@ function isRightSignUpCode(code: string) {
     const expected = process.env.SIGNUP_CODE
     return Boolean(expected) && code === expected
 }
+
+// The person with this id, or null if they no longer exist
+export function findUser(id: number): Promise<PublicUser | null> {
+    return prisma.user.findUnique({ where: { id }, select: PUBLIC_USER })
+}
