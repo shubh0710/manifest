@@ -1,5 +1,6 @@
 import express, { type NextFunction, type Request, type Response } from "express"
 import casesRouter from "./routes/cases.js"
+import authRouter from "./routes/auth.js"
 
 // Builds the server and its routes. It doesn't start listening here,
 // so the tests can use the same app without starting the real server.
@@ -13,6 +14,7 @@ export function createApp() {
         res.json({ status: 'ok' })
     })
 
+    app.use('/api/auth', authRouter)
     app.use('/api/cases', casesRouter)
 
     // Anything that goes wrong in a route ends up here
