@@ -7,11 +7,12 @@ import type { CaseDetails } from "../validation/caseDetails.js"
 // Stands in for the logged-in employee until log-in exists (ticket 7)
 const CURRENT_USER_EMAIL = 'alex.kim@example.com'
 
-// Everything a case needs from the other tables, fetched in the same request
+// Everything a case needs from the other tables, fetched in the same request.
+// From people, only their names: never their email or password hash.
 const CASE_DETAILS = {
     company: true,
-    assignedBy: true,
-    people: { include: { user: true }, orderBy: [{ addedAt: 'asc' }, { userId: 'asc' }] },
+    assignedBy: { select: { name: true } },
+    people: { include: { user: { select: { name: true } } }, orderBy: [{ addedAt: 'asc' }, { userId: 'asc' }] },
     progress: true,
 } satisfies Prisma.CaseInclude
 
