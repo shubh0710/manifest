@@ -1,5 +1,6 @@
 import { prisma } from "../src/db.js"
 import type { ItemState, Prisma } from "../src/generated/prisma/client.js"
+import { hashPassword } from "../src/passwords.js"
 
 // Fills the database with sample data: made-up people, public carriers and
 // made-up leasing companies. It empties the tables first, so it's safe to run again.
@@ -165,6 +166,13 @@ const CASES: Prisma.CaseCreateInput[] = [
 ]
 
 async function seed() {
+    // The sample people share one password. It lives in .env, never in the repo.
+    const password = process.env.SEED_PASSWORD
+    if (!password) {
+        throw new Error('Add SEED_PASSWORD to server/.env first')
+    }
+    const passwordHash = await hashPassword(password)
+
     // Empty the tables, the ones that point at others first
     await prisma.checklistProgress.deleteMany()
     await prisma.casePerson.deleteMany()
@@ -173,7 +181,7 @@ async function seed() {
     await prisma.user.deleteMany()
     await prisma.caseCounter.deleteMany()
 
-    await prisma.user.createMany({ data: USERS })
+    await prisma.user.createMany({ data: USERS.map((user) => ({ ...user, passwordHash })) })
     for (const data of CASES) {
         await prisma.case.create({ data })
     }
