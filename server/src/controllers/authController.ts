@@ -1,7 +1,8 @@
 import type { Request, Response } from "express"
 import { EmailTakenError, WrongLogInError, WrongSignUpCodeError } from "../errors.js"
+import { currentUser } from "../middleware/requireAuth.js"
 import * as authService from "../services/authService.js"
-import { startSession } from "../session.js"
+import { endSession, startSession } from "../session.js"
 import { checkLogIn, checkSignUp } from "../validation/credentials.js"
 
 // POST /api/auth/signup
@@ -48,4 +49,15 @@ export async function logIn(req: Request, res: Response) {
         }
         throw error
     }
+}
+
+// GET /api/auth/me
+export function me(req: Request, res: Response) {
+    res.json(currentUser(req))
+}
+
+// POST /api/auth/logout
+export function logOut(_req: Request, res: Response) {
+    endSession(res)
+    res.status(204).end()
 }

@@ -3,12 +3,13 @@ import request from "supertest"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { createApp } from "../app.js"
 import { EmailTakenError, WrongLogInError, WrongSignUpCodeError } from "../errors.js"
-import { logIn, signUp } from "../services/authService.js"
+import { findUser, logIn, signUp } from "../services/authService.js"
 
 // Swap the service for a stand-in, so these tests never touch the database
 vi.mock('../services/authService.js', () => ({
     signUp: vi.fn(),
     logIn: vi.fn(),
+    findUser: vi.fn(),
 }))
 
 const USER = { id: 7, name: 'Shubh', email: 'shubh@example.com' }
@@ -111,5 +112,81 @@ describe('POST /api/auth/login', () => {
 
         expect(response.status).toBe(500)
         expect(sessionCookie(response)).toBeUndefined()
+    })
+})
+
+describe('GET /api/auth/me', () => {
+    // A cookie header carrying a token, as the browser would send it
+    function cookieWith(token: string) {
+        return `manifest_session=${token}`
+    }
+
+    it('says who is logged in', async () => {
+        vi.mocked(findUser).mockResolvedValue(USER)
+        const token = jwt.sign({ userId: 7 }, TEST_SECRET)
+
+        const response = await request(createApp()).get('/api/auth/me').set('Cookie', cookieWith(token))
+
+        expect(response.status).toBe(200)
+        expect(response.body).toEqual(USER)
+        expect(findUser).toHaveBeenCalledWith(7)
+    })
+
+    it('answers 401 when there is no cookie', async () => {
+        const response = await request(createApp()).get('/api/auth/me')
+
+        expect(response.status).toBe(401)
+        expect(response.body).toEqual({ error: 'Log in to continue' })
+        expect(findUser).not.toHaveBeenCalled()
+    })
+
+    it('answers 401 for a fake, changed or expired token', async () => {
+        const fake = jwt.sign({ userId: 7 }, 'someone-elses-secret')
+        // A real token with its contents swapped for "I'm person 8"
+        const [header, , signature] = jwt.sign({ userId: 7 }, TEST_SECRET).split('.')
+        const changed = [header, Buffer.from('{"userId":8}').toString('base64url'), signature].join('.')
+        const expired = jwt.sign({ userId: 7, exp: Math.floor(Date.now() / 1000) - 60 }, TEST_SECRET)
+
+        for (const token of [fake, changed, expired, 'not-a-token']) {
+            const response = await request(createApp()).get('/api/auth/me').set('Cookie', cookieWith(token))
+            expect(response.status).toBe(401)
+        }
+        expect(findUser).not.toHaveBeenCalled()
+    })
+
+    it('logs out someone whose account no longer exists', async () => {
+        vi.mocked(findUser).mockResolvedValue(null)
+        const token = jwt.sign({ userId: 7 }, TEST_SECRET)
+
+        const response = await request(createApp()).get('/api/auth/me').set('Cookie', cookieWith(token))
+
+        expect(response.status).toBe(401)
+        expect(response.body).toEqual({ error: 'Your session has ended. Log in again' })
+        expect(sessionCookie(response)).toContain('Expires=Thu, 01 Jan 1970')
+    })
+})
+
+describe('POST /api/auth/logout', () => {
+    it('tells the browser to delete the cookie', async () => {
+        const response = await request(createApp()).post('/api/auth/logout')
+
+        expect(response.status).toBe(204)
+        // A cookie that expired in 1970 is deleted by the browser straight away
+        expect(sessionCookie(response)).toContain('Expires=Thu, 01 Jan 1970')
+    })
+})
+
+describe('logging in, then out', () => {
+    it('remembers the person until they log out', async () => {
+        vi.mocked(logIn).mockResolvedValue(USER)
+        vi.mocked(findUser).mockResolvedValue(USER)
+        // An agent keeps cookies between requests, like a browser
+        const browser = request.agent(createApp())
+
+        await browser.post('/api/auth/login').send({ email: 'shubh@example.com', password: 'correct horse battery' })
+        expect((await browser.get('/api/auth/me')).status).toBe(200)
+
+        await browser.post('/api/auth/logout')
+        expect((await browser.get('/api/auth/me')).status).toBe(401)
     })
 })
