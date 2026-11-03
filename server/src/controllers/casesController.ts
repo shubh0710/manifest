@@ -1,11 +1,12 @@
 import type { Request, Response } from "express"
 import { ActiveCaseError, CaseAlreadyStartedError, CaseNotFoundError } from "../errors.js"
+import { currentUser } from "../middleware/requireAuth.js"
 import * as casesService from "../services/casesService.js"
 import { checkCaseDetails } from "../validation/caseDetails.js"
 
 // GET /api/cases
-export async function listCases(_req: Request, res: Response) {
-    const cases = await casesService.listCases()
+export async function listCases(req: Request, res: Response) {
+    const cases = await casesService.listCases(currentUser(req).id)
     res.json(cases)
 }
 
@@ -18,7 +19,7 @@ export async function createCase(req: Request, res: Response) {
     }
 
     try {
-        const created = await casesService.createCase(result.details)
+        const created = await casesService.createCase(result.details, currentUser(req).id)
         res.status(201).json(created)
     } catch (error) {
         if (error instanceof ActiveCaseError) {
@@ -32,7 +33,7 @@ export async function createCase(req: Request, res: Response) {
 // POST /api/cases/:id/start
 export async function startCase(req: Request<{ id: string }>, res: Response) {
     try {
-        const started = await casesService.startCase(req.params.id)
+        const started = await casesService.startCase(req.params.id, currentUser(req).id)
         res.json(started)
     } catch (error) {
         if (error instanceof CaseNotFoundError) {
