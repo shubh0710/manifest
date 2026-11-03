@@ -1,6 +1,7 @@
 import { prisma } from "../db.js"
 import { ActiveCaseError, CaseAlreadyStartedError, CaseNotFoundError } from "../errors.js"
-import { Prisma } from "../generated/prisma/client.js"
+import type { Prisma } from "../generated/prisma/client.js"
+import { isNotFound, isUniqueClash } from "../prismaErrors.js"
 import type { Case, CaseOutcome, CaseStage, ItemProgress } from "../types/case.js"
 import type { CaseDetails } from "../validation/caseDetails.js"
 
@@ -130,16 +131,6 @@ async function nextCaseNumber(): Promise<string> {
 // 2026 and 150 → C-2026-0150
 export function formatCaseNumber(year: number, count: number): string {
     return `C-${year}-${String(count).padStart(4, '0')}`
-}
-
-// P2002 is Prisma's code for "a unique rule turned this save down"
-function isUniqueClash(error: unknown): boolean {
-    return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002'
-}
-
-// P2025 is Prisma's code for "no row matched, so nothing was changed"
-function isNotFound(error: unknown): boolean {
-    return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025'
 }
 
 // Turns one database row (with its company, people and checklist) into the
