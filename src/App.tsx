@@ -3,6 +3,7 @@ import RequireAuth from "./components/RequireAuth"
 import AppLayout from "./layouts/AppLayout"
 import AuthLayout from "./layouts/AuthLayout"
 import LogInPage from "./pages/LogInPage"
+import SignUpPage from "./pages/SignUpPage"
 import OpenCasesPage from "./pages/OpenCasesPage"
 import NewCasePage from "./pages/NewCasePage"
 import AssignedCasesPage from "./pages/AssignedCasesPage"
@@ -15,6 +16,7 @@ function App() {
     <Routes>
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LogInPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
       </Route>
 
       <Route element={<RequireAuth />}>

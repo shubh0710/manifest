@@ -1,5 +1,7 @@
 import { useState, type SubmitEvent } from "react"
+import { Link } from "react-router"
 import { ApiError } from "../api/client"
+import PasswordInput from "../components/PasswordInput"
 import { useAuth } from "../context/authContext"
 
 function LogInPage() {
@@ -42,6 +44,7 @@ function LogInPage() {
                         type="email"
                         className="text-input"
                         autoComplete="email"
+                        placeholder="name@example.com"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
                     />
@@ -51,13 +54,11 @@ function LogInPage() {
                     <label htmlFor="password" className="field-label">
                         Password
                     </label>
-                    <input
+                    <PasswordInput
                         id="password"
-                        type="password"
-                        className="text-input"
                         autoComplete="current-password"
                         value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        onChange={setPassword}
                     />
                 </div>
 
@@ -71,6 +72,10 @@ function LogInPage() {
                     {loggingIn ? 'Logging in…' : 'Log in'}
                 </button>
             </form>
+
+            <p className="auth-switch">
+                New here? <Link to="/signup">Create an account</Link>
+            </p>
         </>
     )
 }

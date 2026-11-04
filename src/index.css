@@ -223,6 +223,13 @@ a:hover {
     color: var(--bad-ink);
 }
 
+/* A short grey note under a box, like "8 to 72 characters." */
+.field-hint {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--ink-3);
+}
+
 /* Cards */
 .card {
     background: var(--surface);

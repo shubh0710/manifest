@@ -1,41 +1,57 @@
-/* The log-in page: the logo and one card in the middle of the screen */
+/* The log-in and sign-up pages: the logo and one card in the middle of the screen */
 .auth-page {
+    position: relative;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 24px;
-    padding: 48px 16px;
+    gap: 28px;
+    padding: 72px 16px 48px;
+}
+
+/* The theme switch, in the top corner */
+.auth-theme {
+    position: absolute;
+    top: 16px;
+    right: 16px;
 }
 
 .auth-brand {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
 }
 
 .auth-brand-name {
-    font-size: 20px;
+    display: block;
+    font-size: 22px;
     font-weight: 700;
     letter-spacing: -0.02em;
+}
+
+.auth-tagline {
+    font-size: 13px;
+    color: var(--ink-3);
 }
 
 .auth-card {
     width: 100%;
     max-width: 400px;
-    padding: 28px;
+    padding: 32px;
+    box-shadow: 0 8px 24px var(--shadow);
 }
 
 /* The parts inside the card */
 .auth-title {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
 .auth-subtitle {
-    margin-top: 4px;
-    color: var(--ink-3);
+    margin-top: 6px;
+    color: var(--ink-2);
 }
 
 .auth-form {
@@ -52,4 +68,16 @@
 .auth-submit {
     width: 100%;
     margin-top: 4px;
+}
+
+/* "New here? Create an account" under the form */
+.auth-switch {
+    margin-top: 20px;
+    font-size: 13px;
+    text-align: center;
+    color: var(--ink-3);
+}
+
+.auth-switch a {
+    font-weight: 600;
 }
