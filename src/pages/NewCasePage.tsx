@@ -1,7 +1,7 @@
 import { useState, type SubmitEvent } from "react"
 import { useNavigate, useSearchParams } from "react-router"
 import { Inbox } from "lucide-react"
-import { ApiError } from "../api/cases"
+import { ApiError } from "../api/client"
 import SelfStartPanel from "../components/SelfStartPanel"
 import { useCases } from "../context/casesContext"
 import { formatDate } from "../utils/dates"

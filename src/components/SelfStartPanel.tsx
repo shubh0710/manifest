@@ -1,7 +1,7 @@
 import { useState, type SubmitEvent } from "react"
 import { Link, useNavigate } from "react-router"
 import { CircleCheck, Plus, TriangleAlert } from "lucide-react"
-import { ApiError } from "../api/cases"
+import { ApiError } from "../api/client"
 import { useCases } from "../context/casesContext"
 import { CARRIERS } from "../fixtures/carriers"
 import type { CaseType } from "../types/case"

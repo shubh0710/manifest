@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { ApiError, createCase, fetchCases } from "./cases"
+import { createCase, fetchCases } from "./cases"
+import { ApiError } from "./client"
 
 // Stands in for the browser's fetch, so no real server is needed
 function replyWith(status: number, body: unknown) {
