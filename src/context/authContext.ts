@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react"
+import type { SignUpDetails } from "../api/auth"
 import type { User } from "../types/user"
 
 // Whether we know yet: still asking the server, or we have the answer
@@ -8,6 +9,8 @@ export type AuthContextValue = {
     user: User | null
     status: AuthStatus
     logIn: (email: string, password: string) => Promise<void>
+    signUp: (details: SignUpDetails) => Promise<void>
+    logOut: () => Promise<void>
     forgetUser: () => void
 }
 

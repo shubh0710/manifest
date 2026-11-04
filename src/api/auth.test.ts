@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
-import { fetchMe, logIn } from "./auth"
+import { fetchMe, logIn, logOut, signUp } from "./auth"
 
 const USER = { id: 7, name: 'Shubh', email: 'shubh@example.com' }
 
@@ -53,5 +53,40 @@ describe('logIn', () => {
             status: 401,
             message: 'Wrong email or password',
         })
+    })
+})
+
+describe('signUp', () => {
+    const details = { name: 'Shubh', email: 'shubh@example.com', password: 'correct horse battery', code: 'let-me-in' }
+
+    it('sends the details as JSON and gives back the new person', async () => {
+        const fetch = replyWith(201, USER)
+
+        await expect(signUp(details)).resolves.toEqual(USER)
+        expect(fetch).toHaveBeenCalledWith('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(details),
+        })
+    })
+
+    it("passes on the server's message for a wrong code", async () => {
+        replyWith(403, { error: 'That sign-up code is not right' })
+
+        await expect(signUp(details)).rejects.toMatchObject({
+            status: 403,
+            message: 'That sign-up code is not right',
+        })
+    })
+})
+
+describe('logOut', () => {
+    it('asks the server to end the session', async () => {
+        // Log out answers 204: done, with no body at all
+        const fetch = vi.fn().mockResolvedValue(new Response(null, { status: 204 }))
+        vi.stubGlobal('fetch', fetch)
+
+        await expect(logOut()).resolves.toBeUndefined()
+        expect(fetch).toHaveBeenCalledWith('/api/auth/logout', { method: 'POST' })
     })
 })

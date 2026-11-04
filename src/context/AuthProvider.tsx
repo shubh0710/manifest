@@ -42,13 +42,26 @@ function AuthProvider({ children }: AuthProviderProps) {
         setUser(me)
     }
 
+    // A new account is logged in straight away
+    async function signUp(details: api.SignUpDetails) {
+        const me = await api.signUp(details)
+        setUser(me)
+    }
+
+    // Only forgets the person once the server has ended the session,
+    // so a failed log out never looks like it worked
+    async function logOut() {
+        await api.logOut()
+        setUser(null)
+    }
+
     // Forgets who's logged in on this page, when the server says the login has ended.
     // useCallback keeps it the same function every time, so pages can safely use it in effects.
     const forgetUser = useCallback(() => {
         setUser(null)
     }, [])
 
-    return <AuthContext value={{ user, status, logIn, forgetUser }}>{children}</AuthContext>
+    return <AuthContext value={{ user, status, logIn, signUp, logOut, forgetUser }}>{children}</AuthContext>
 }
 
 export default AuthProvider
