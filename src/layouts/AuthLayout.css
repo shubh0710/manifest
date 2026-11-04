@@ -1,0 +1,55 @@
+/* The log-in page: the logo and one card in the middle of the screen */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 48px 16px;
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.auth-brand-name {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 28px;
+}
+
+/* The parts inside the card */
+.auth-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.auth-subtitle {
+    margin-top: 4px;
+    color: var(--ink-3);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.auth-form .field-error {
+    margin-top: 0;
+}
+
+.auth-submit {
+    width: 100%;
+    margin-top: 4px;
+}
