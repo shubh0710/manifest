@@ -1,7 +1,9 @@
 import { useState } from "react"
 import { Link, NavLink } from "react-router"
-import { Archive, Briefcase, Inbox, PanelLeftClose, PanelLeftOpen, Plus, type LucideIcon } from "lucide-react"
+import { Archive, Briefcase, Inbox, LogOut, PanelLeftClose, PanelLeftOpen, Plus, type LucideIcon } from "lucide-react"
+import { useAuth } from "../context/authContext"
 import { useCases } from "../context/casesContext"
+import { initials } from "../utils/people"
 import { readSetting, saveSetting } from "../utils/storage"
 import type { Case } from "../types/case"
 import Logo from "./Logo"
@@ -25,7 +27,10 @@ const SIDEBAR_KEY = 'manifest-sidebar'
 
 function Sidebar() {
     const { cases, status } = useCases()
+    const { user, logOut } = useAuth()
     const [collapsed, setCollapsed] = useState(() => readSetting(SIDEBAR_KEY) === 'collapsed')
+    const [loggingOut, setLoggingOut] = useState(false)
+    const [logOutError, setLogOutError] = useState('')
 
     const ToggleIcon = collapsed ? PanelLeftOpen : PanelLeftClose
     const toggleLabel = collapsed ? 'Expand sidebar' : 'Collapse sidebar'
@@ -34,6 +39,18 @@ function Sidebar() {
         const next = !collapsed
         setCollapsed(next)
         saveSetting(SIDEBAR_KEY, next ? 'collapsed' : 'open')
+    }
+
+    async function handleLogOut() {
+        setLoggingOut(true)
+        setLogOutError('')
+        try {
+            await logOut()
+            // Nothing else to do: with nobody logged in, the app shows the log-in page
+        } catch {
+            setLoggingOut(false)
+            setLogOutError("Couldn't log out. Check your connection and try again.")
+        }
     }
 
     return (
@@ -92,6 +109,36 @@ function Sidebar() {
                 <span className="nav-label">Theme</span>
                 <ThemeSwitch />
             </div>
+
+            {user && (
+                <div className="sidebar-user">
+                    <div className="sidebar-user-row">
+                        <span className="avatar" aria-hidden="true">
+                            {initials(user.name)}
+                        </span>
+                        <span className="sidebar-user-text">
+                            <span className="sidebar-user-name">{user.name}</span>
+                            <span className="sidebar-user-email">{user.email}</span>
+                        </span>
+                        <button
+                            type="button"
+                            className="sidebar-logout"
+                            onClick={handleLogOut}
+                            disabled={loggingOut}
+                            aria-label="Log out"
+                            title="Log out"
+                        >
+                            <LogOut size={18} aria-hidden="true" />
+                        </button>
+                    </div>
+
+                    {logOutError && (
+                        <p className="field-error" role="alert">
+                            {logOutError}
+                        </p>
+                    )}
+                </div>
+            )}
         </aside>
     )
 }

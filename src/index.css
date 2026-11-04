@@ -186,6 +186,50 @@ a:hover {
     cursor: not-allowed;
 }
 
+/* Shown on its own while the app finds out who's logged in */
+.page-loading {
+    padding: 48px 16px;
+    text-align: center;
+    color: var(--ink-3);
+}
+
+/* Forms: shared by every form in the app */
+
+.field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.text-input {
+    flex: 1 1 200px;
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    padding: 0 12px;
+    border: 1px solid var(--input);
+    border-radius: 8px;
+    background: var(--field);
+    color: var(--ink);
+}
+
+.text-input.mono {
+    font-family: var(--mono);
+}
+
+.field-error {
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--bad-ink);
+}
+
+/* A short grey note under a box, like "8 to 72 characters." */
+.field-hint {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--ink-3);
+}
+
 /* Cards */
 .card {
     background: var(--surface);

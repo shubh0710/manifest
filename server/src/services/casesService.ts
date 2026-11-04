@@ -1,17 +1,16 @@
 import { prisma } from "../db.js"
 import { ActiveCaseError, CaseAlreadyStartedError, CaseNotFoundError } from "../errors.js"
-import { Prisma } from "../generated/prisma/client.js"
+import type { Prisma } from "../generated/prisma/client.js"
+import { isNotFound, isUniqueClash } from "../prismaErrors.js"
 import type { Case, CaseOutcome, CaseStage, ItemProgress } from "../types/case.js"
 import type { CaseDetails } from "../validation/caseDetails.js"
 
-// Stands in for the logged-in employee until log-in exists (ticket 7)
-const CURRENT_USER_EMAIL = 'alex.kim@example.com'
-
-// Everything a case needs from the other tables, fetched in the same request
+// Everything a case needs from the other tables, fetched in the same request.
+// From people, only their names: never their email or password hash.
 const CASE_DETAILS = {
     company: true,
-    assignedBy: true,
-    people: { include: { user: true }, orderBy: [{ addedAt: 'asc' }, { userId: 'asc' }] },
+    assignedBy: { select: { name: true } },
+    people: { include: { user: { select: { name: true } } }, orderBy: [{ addedAt: 'asc' }, { userId: 'asc' }] },
     progress: true,
 } satisfies Prisma.CaseInclude
 
@@ -29,30 +28,31 @@ const OUTCOME_LABEL: Record<NonNullable<CaseRow['outcome']>, CaseOutcome> = {
     declined: 'Declined by markets',
 }
 
-// Every case, the most recently changed first
-export async function listCases(): Promise<Case[]> {
+// Every case this person may see, the most recently changed first
+export async function listCases(userId: number): Promise<Case[]> {
     const rows = await prisma.case.findMany({
+        where: visibleTo(userId),
         include: CASE_DETAILS,
         orderBy: { updatedAt: 'desc' },
     })
     return rows.map(toApiCase)
 }
 
-// Starts a new open case, assigned to you, and gives it back
-export async function createCase(details: CaseDetails): Promise<Case> {
+// Starts a new open case with this person on it, and gives it back
+export async function createCase(details: CaseDetails, userId: number): Promise<Case> {
     try {
-        return await saveNewCase(details)
+        return await saveNewCase(details, userId)
     } catch (error) {
         // Someone else saved a case for the same company at the same moment, and
         // the database turned ours down. Look again: this time we'll see their case.
         if (isUniqueClash(error)) {
-            return await saveNewCase(details)
+            return await saveNewCase(details, userId)
         }
         throw error
     }
 }
 
-async function saveNewCase(details: CaseDetails): Promise<Case> {
+async function saveNewCase(details: CaseDetails, userId: number): Promise<Case> {
     const company = await findCompany(details)
     const activeCase = company?.cases[0]
     if (activeCase) {
@@ -65,19 +65,19 @@ async function saveNewCase(details: CaseDetails): Promise<Case> {
             status: 'open',
             stage: 'gathering_documents',
             company: company ? { connect: { id: company.id } } : { create: details },
-            people: { create: { user: { connect: { email: CURRENT_USER_EMAIL } } } },
+            people: { create: { user: { connect: { id: userId } } } },
         },
         include: CASE_DETAILS,
     })
     return toApiCase(created)
 }
 
-// Turns an assigned (new) case into an open one, and gives it back
-export async function startCase(caseId: string): Promise<Case> {
+// Turns a case assigned to this person (new) into an open one, and gives it back
+export async function startCase(caseId: string, userId: number): Promise<Case> {
     try {
         const started = await prisma.case.update({
-            // Only a case that is still new can be started
-            where: { number: caseId, status: 'new' },
+            // Only a case that is still new, and assigned to this person, can be started
+            where: { number: caseId, status: 'new', people: { some: { userId } } },
             data: { status: 'open', stage: 'gathering_documents' },
             include: CASE_DETAILS,
         })
@@ -86,10 +86,19 @@ export async function startCase(caseId: string): Promise<Case> {
         if (!isNotFound(error)) {
             throw error
         }
-        // Nothing was changed: either there's no such case, or it's not new any more
-        const existing = await prisma.case.findUnique({ where: { number: caseId } })
-        throw existing ? new CaseAlreadyStartedError(caseId) : new CaseNotFoundError(caseId)
+        // Nothing was changed. A case this person can't see doesn't exist for them;
+        // one they can see has already been started.
+        const visible = await prisma.case.findFirst({ where: { number: caseId, ...visibleTo(userId) } })
+        throw visible ? new CaseAlreadyStartedError(caseId) : new CaseNotFoundError(caseId)
     }
+}
+
+// The cases a person may see: everyone's open and closed cases, but only the
+// new ones assigned to them
+function visibleTo(userId: number) {
+    return {
+        OR: [{ status: { not: 'new' } }, { people: { some: { userId } } }],
+    } satisfies Prisma.CaseWhereInput
 }
 
 // A company's case in progress (new or open), if it has one
@@ -129,16 +138,6 @@ async function nextCaseNumber(): Promise<string> {
 // 2026 and 150 → C-2026-0150
 export function formatCaseNumber(year: number, count: number): string {
     return `C-${year}-${String(count).padStart(4, '0')}`
-}
-
-// P2002 is Prisma's code for "a unique rule turned this save down"
-function isUniqueClash(error: unknown): boolean {
-    return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002'
-}
-
-// P2025 is Prisma's code for "no row matched, so nothing was changed"
-function isNotFound(error: unknown): boolean {
-    return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025'
 }
 
 // Turns one database row (with its company, people and checklist) into the

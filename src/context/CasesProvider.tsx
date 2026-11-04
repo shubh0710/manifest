@@ -1,14 +1,22 @@
 import { useEffect, useState, type ReactNode } from "react"
 import * as api from "../api/cases"
+import { ApiError } from "../api/client"
 import type { Case } from "../types/case"
+import { useAuth } from "./authContext"
 import { CasesContext, type LoadStatus } from "./casesContext"
 
 type CasesProviderProps = {
     children: ReactNode
 }
 
+// The server says nobody is logged in any more: the login ran out, or the person was removed
+function isLoggedOut(error: unknown) {
+    return error instanceof ApiError && error.status === 401
+}
+
 // Holds the one list of cases for the whole app, loaded from the server
 function CasesProvider({ children }: CasesProviderProps) {
+    const { forgetUser } = useAuth()
     const [cases, setCases] = useState<Case[]>([])
     const [status, setStatus] = useState<LoadStatus>('loading')
     // Goes up by one each time we ask for the list again
@@ -25,16 +33,22 @@ function CasesProvider({ children }: CasesProviderProps) {
                     setStatus('ready')
                 }
             })
-            .catch(() => {
-                if (!ignore) {
-                    setStatus('error')
+            .catch((error) => {
+                if (ignore) {
+                    return
                 }
+                // Back to the log-in page, instead of "couldn't load"
+                if (isLoggedOut(error)) {
+                    forgetUser()
+                    return
+                }
+                setStatus('error')
             })
 
         return () => {
             ignore = true
         }
-    }, [attempt])
+    }, [attempt, forgetUser])
 
     function reload() {
         setStatus('loading')
@@ -55,7 +69,10 @@ function CasesProvider({ children }: CasesProviderProps) {
             const started = await api.startCase(id)
             setCases((current) => current.map((item) => (item.id === id ? started : item)))
         } catch (error) {
-            if (error instanceof api.ApiError && error.status === 409) {
+            if (isLoggedOut(error)) {
+                forgetUser()
+            }
+            if (error instanceof ApiError && error.status === 409) {
                 refreshQuietly()
             }
             throw error
@@ -69,7 +86,10 @@ function CasesProvider({ children }: CasesProviderProps) {
             setCases((current) => [created, ...current])
             return created.id
         } catch (error) {
-            if (error instanceof api.ApiError && error.status === 409) {
+            if (isLoggedOut(error)) {
+                forgetUser()
+            }
+            if (error instanceof ApiError && error.status === 409) {
                 refreshQuietly()
             }
             throw error

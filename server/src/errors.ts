@@ -32,3 +32,28 @@ export class CaseAlreadyStartedError extends Error {
         this.caseId = caseId
     }
 }
+
+// Thrown when the sign-up code is missing or wrong
+export class WrongSignUpCodeError extends Error {
+    constructor() {
+        super('That sign-up code is not right')
+        this.name = 'WrongSignUpCodeError'
+    }
+}
+
+// Thrown when someone signs up with an email that already has an account
+export class EmailTakenError extends Error {
+    constructor() {
+        super('An account with this email already exists')
+        this.name = 'EmailTakenError'
+    }
+}
+
+// Thrown when the email or the password is wrong. One message for both,
+// so nobody can find out which emails have an account.
+export class WrongLogInError extends Error {
+    constructor() {
+        super('Wrong email or password')
+        this.name = 'WrongLogInError'
+    }
+}

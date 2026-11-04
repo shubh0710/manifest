@@ -6,14 +6,14 @@ import '@fontsource/ibm-plex-mono'
 import '@fontsource/ibm-plex-mono/500.css'
 import './index.css'
 import App from './App.tsx'
-import CasesProvider from './context/CasesProvider.tsx'
+import AuthProvider from './context/AuthProvider.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <CasesProvider>
+      <AuthProvider>
         <App />
-      </CasesProvider>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>,
 )

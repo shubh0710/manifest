@@ -33,7 +33,7 @@ function makeRow(changes: Partial<CaseRow> = {}): CaseRow {
                 caseId: 1,
                 userId: 1,
                 addedAt: new Date('2026-10-01T09:00:00Z'),
-                user: { id: 1, name: 'Alex Kim', email: 'alex.kim@example.com', createdAt: new Date() },
+                user: { name: 'Alex Kim' },
             },
         ],
         progress: [
@@ -69,7 +69,7 @@ describe('toApiCase', () => {
             stage: null,
             effectiveDate: null,
             assignedById: 4,
-            assignedBy: { id: 4, name: 'Laura Chen', email: 'laura.chen@example.com', createdAt: new Date() },
+            assignedBy: { name: 'Laura Chen' },
             assignedAt: new Date('2026-10-18T09:30:00Z'),
             dueOn: new Date('2026-10-24'),
             note: 'Renewal in December.',
