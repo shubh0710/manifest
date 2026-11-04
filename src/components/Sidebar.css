@@ -119,6 +119,81 @@
     padding: 0;
 }
 
+/* Who's logged in, and the Log out button, at the very bottom */
+.sidebar-user {
+    padding: 12px 8px 0;
+    border-top: 1px solid var(--divider);
+}
+
+.sidebar-user-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* The round badge with someone's initials */
+.avatar {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    background: var(--neutral-bg);
+    color: var(--ink-2);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Takes the space between the badge and the button; long names and emails end in … */
+.sidebar-user-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-user-name,
+.sidebar-user-email {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sidebar-user-name {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.sidebar-user-email {
+    font-size: 12px;
+    color: var(--ink-3);
+}
+
+.sidebar-logout {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink-2);
+    cursor: pointer;
+}
+
+.sidebar-logout:hover {
+    background: var(--hover);
+    color: var(--ink);
+}
+
+.sidebar-logout:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 /* Narrow screens: the sidebar sits on top, so there's nothing to collapse */
 @media (max-width: 799px) {
     .sidebar-toggle {
@@ -162,6 +237,15 @@
         flex-direction: column;
     }
 
+    /* In the thin strip: the badge above the Log out button */
+    .sidebar.collapsed .sidebar-user {
+        padding: 12px 0 0;
+    }
+
+    .sidebar.collapsed .sidebar-user-row {
+        flex-direction: column;
+    }
+
     .sidebar.collapsed .sidebar-new,
     .sidebar.collapsed .nav-item {
         justify-content: center;
@@ -171,7 +255,8 @@
     /* Hidden from the eye, still read out by screen readers */
     .sidebar.collapsed .sidebar-new-text,
     .sidebar.collapsed .nav-text,
-    .sidebar.collapsed .badge {
+    .sidebar.collapsed .badge,
+    .sidebar.collapsed .sidebar-user-text {
         position: absolute;
         width: 1px;
         height: 1px;
