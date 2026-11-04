@@ -41,39 +41,11 @@
     color: var(--ink-3);
 }
 
-.field-label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 600;
-}
-
 /* The DOT box and the Look up button side by side; the button drops below on narrow screens */
 .field-row {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-}
-
-.text-input {
-    flex: 1 1 200px;
-    width: 100%;
-    min-width: 0;
-    height: 44px;
-    padding: 0 12px;
-    border: 1px solid var(--input);
-    border-radius: 8px;
-    background: var(--field);
-    color: var(--ink);
-}
-
-.text-input.mono {
-    font-family: var(--mono);
-}
-
-.field-error {
-    margin-top: 8px;
-    font-size: 13px;
-    color: var(--bad-ink);
 }
 
 .form-submit {
